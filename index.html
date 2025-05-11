@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeGod NFT Finder</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 20px;
+            background-color: red;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.5;
+        }
+        .container {
+            background-color: red;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .header-image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+            max-width: 100%;
+        }
+        #headerImage {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .header-link-overlay {
+            position: absolute;
+            display: block;
+            border-radius: 50%;
+            z-index: 5;
+        }
+        #headerLinkTwitter {
+            top: 65%;
+            left: 9%;
+            width: 10%;
+            height: 18%;
+        }
+        #headerLinkDegods {
+            top: 65%;
+            left: 26%;
+            width: 10%;
+            height: 18%;
+        }
+
+
+        .search-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ff8080;
+            border-radius: 4px;
+            flex: 1 1 auto;
+            min-width: 150px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            text-transform: none;
+            background-color: #cc0000;
+            color: white;
+        }
+        input[type="number"]::placeholder {
+            text-transform: uppercase;
+            color: #ffcccc;
+        }
+
+        button, .action-button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+        button:active, .action-button:active {
+            transform: translateY(1px);
+        }
+
+        #searchBtn, #toggleHandOptionsBtn, #downloadBtn {
+            background-color: #0D98BA;
+        }
+        #searchBtn:hover, #toggleHandOptionsBtn:hover, #downloadBtn:hover {
+            background-color: #0A7A9A;
+        }
+
+        #resetAppBtn {
+            background-color: #f0ad4e;
+        }
+        #resetAppBtn:hover {
+            background-color: #ec971f;
+        }
+
+        #toggleHandOptionsBtn {
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: fit-content;
+            padding: 8px 12px;
+        }
+
+        .hand-controls-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .hand-toggle-button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            width: 120px;
+        }
+
+        .hand-toggle-button.off {
+            background-color: #f0ad4e;
+        }
+        .hand-toggle-button.off:hover {
+            background-color: #ec971f;
+        }
+        .hand-toggle-button.on {
+            background-color: #5cb85c;
+        }
+        .hand-toggle-button.on:hover {
+            background-color: #4cae4c;
+        }
+
+        #result {
+            margin-top: 10px;
+        }
+
+        .image-stack-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            aspect-ratio: 1 / 1;
+            margin: 15px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            /* display: block; Set in HTML now */
+        }
+
+        .image-stack-container img {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        #nftImage {
+            position: relative;
+            z-index: 1;
+            border: 1px solid #ff8080;
+        }
+
+        #leftHandImage { z-index: 3; }
+        #rightHandImage { z-index: 4; }
+
+        .error, .hand-error {
+            color: #ffff00;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .loading {
+            margin-top: 10px;
+            font-style: italic;
+            color: white;
+        }
+        #downloadBtn {
+            display: block;
+            width: -moz-fit-content;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-image-container">
+            <!-- MODIFIED: Set src via JS -->
+            <img id="headerImage" src="" alt="NORMIEZ ZONE HEADER">
+            <a id="headerLinkTwitter" class="header-link-overlay" href="https://x.com/normiez_eth" target="_blank" rel="noopener noreferrer" aria-label="Visit Normiez on X"></a>
+            <a id="headerLinkDegods" class="header-link-overlay" href="https://degods.com" target="_blank" rel="noopener noreferrer" aria-label="Visit Degods.com"></a>
+        </div>
+
+        <div class="search-controls">
+            <input type="number" id="deGodIdInput" placeholder="YOUR DEGOD ID" min="1" max="10000">
+            <button id="searchBtn">SEARCH</button>
+            <button id="resetAppBtn">RESET</button>
+        </div>
+
+        <button id="toggleHandOptionsBtn">MIDDLE FINGERS</button>
+
+        <div id="handControlsContainer" class="hand-controls-container" style="display: none;">
+            <button id="rightHandBtn" class="hand-toggle-button off">RIGHT</button>
+            <button id="leftHandBtn" class="hand-toggle-button off">LEFT</button>
+        </div>
+
+
+        <div id="result">
+            <div id="loading" class="loading" style="display:none;">LOADING DATA...</div>
+            <div id="error" class="error"></div>
+
+            <div id="imageStackContainer" class="image-stack-container" style="display: block;">
+                 <!-- MODIFIED: Set src via JS -->
+                <img id="nftImage" src="" alt="PREVIEW IMAGE">
+                <img id="leftHandImage" src="" alt="Left Hand Overlay" style="display:none;">
+                <img id="rightHandImage" src="" alt="Right Hand Overlay" style="display:none;">
+            </div>
+            <p id="leftHandError" class="hand-error" style="display:none;"></p>
+            <p id="rightHandError" class="hand-error" style="display:none;"></p>
+            <button id="downloadBtn" class="action-button" style="display:none;">DOWNLOAD IMAGE</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Obfuscated URLs ---
+        const _B64_HEADER_IMG = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2Fzc2V0cy9oZWFkZXIucG5n";
+        const _B64_PREVIEW_IMG = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2Fzc2V0cy9wcmV2aWV3JTIwZGVnb2QucG5n";
+        const _B64_LEFT_HAND_BASE = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2xlZnQtaGFuZC8=";
+        const _B64_RIGHT_HAND_BASE = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL3JpZ2h0LWhhbmQv";
+        const _B64_METADATA_BASE = "aHR0cHM6Ly9tZXRhZGF0YS5kZWdvZHMuY29tL2cv";
+
+        let showLeftHand = false;
+        let showRightHand = false;
+        let handOptionsVisible = false;
+        let lastFetchedMetadata = null;
+
+        let currentFetchController = null;
+        let currentNftImageLoadId = 0;
+        let currentLeftHandLoadId = 0;
+        let currentRightHandLoadId = 0;
+
+        // Use decoded URLs
+        const PREVIEW_IMAGE_URL = atob(_B64_PREVIEW_IMG);
+        const PREVIEW_IMAGE_ALT = "PREVIEW IMAGE";
+
+        const deGodIdInput = document.getElementById('deGodIdInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resetAppBtn = document.getElementById('resetAppBtn');
+
+        const toggleHandOptionsBtn = document.getElementById('toggleHandOptionsBtn');
+        const handControlsContainer = document.getElementById('handControlsContainer');
+        const leftHandBtn = document.getElementById('leftHandBtn');
+        const rightHandBtn = document.getElementById('rightHandBtn');
+
+        const imageStackContainer = document.getElementById('imageStackContainer');
+        const nftImage = document.getElementById('nftImage');
+        const leftHandImage = document.getElementById('leftHandImage');
+        const rightHandImage = document.getElementById('rightHandImage');
+
+        const errorDiv = document.getElementById('error');
+        const leftHandError = document.getElementById('leftHandError');
+        const rightHandError = document.getElementById('rightHandError');
+
+        const loadingDiv = document.getElementById('loading');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const headerImageElem = document.getElementById('headerImage'); // Get header image element
+
+        // --- Initialize static images ---
+        headerImageElem.src = atob(_B64_HEADER_IMG);
+        nftImage.src = PREVIEW_IMAGE_URL; // Initial preview
+        nftImage.alt = PREVIEW_IMAGE_ALT;
+
+
+        // --- Event Listeners ---
+        searchBtn.addEventListener('click', fetchDeGod);
+        resetAppBtn.addEventListener('click', resetSearch);
+
+        toggleHandOptionsBtn.addEventListener('click', () => {
+            handOptionsVisible = !handOptionsVisible;
+            handControlsContainer.style.display = handOptionsVisible ? 'flex' : 'none';
+
+            if (!handOptionsVisible) {
+                if (showLeftHand) {
+                    showLeftHand = false;
+                    leftHandBtn.classList.add('off');
+                    leftHandBtn.classList.remove('on');
+                    updateOverlayVisibility('left');
+                }
+                if (showRightHand) {
+                    showRightHand = false;
+                    rightHandBtn.classList.add('off');
+                    rightHandBtn.classList.remove('on');
+                    updateOverlayVisibility('right');
+                }
+            }
+        });
+
+        leftHandBtn.addEventListener('click', () => {
+            showLeftHand = !showLeftHand;
+            leftHandBtn.classList.toggle('off', !showLeftHand);
+            leftHandBtn.classList.toggle('on', showLeftHand);
+            updateOverlayVisibility('left');
+        });
+
+        rightHandBtn.addEventListener('click', () => {
+            showRightHand = !showRightHand;
+            rightHandBtn.classList.toggle('off', !showRightHand);
+            rightHandBtn.classList.toggle('on', showRightHand);
+            updateOverlayVisibility('right');
+        });
+
+        downloadBtn.addEventListener('click', handleDownload);
+
+        deGodIdInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                fetchDeGod();
+            }
+        });
+
+        // --- UI Update Functions ---
+        function clearFetchedDataUI(showPreview = false) {
+            if (showPreview) {
+                imageStackContainer.style.display = 'block';
+                nftImage.src = PREVIEW_IMAGE_URL; // Use decoded constant
+                nftImage.alt = PREVIEW_IMAGE_ALT;
+            } else {
+                imageStackContainer.style.display = 'none';
+                nftImage.src = '';
+                nftImage.alt = 'DeGod NFT';
+            }
+
+            nftImage.onload = null;
+            nftImage.onerror = null;
+
+            [leftHandImage, rightHandImage].forEach(img => {
+                img.onload = null;
+                img.onerror = null;
+                img.src = '';
+                img.style.display = 'none';
+            });
+
+            downloadBtn.style.display = 'none';
+            errorDiv.textContent = '';
+            leftHandError.textContent = '';
+            leftHandError.style.display = 'none';
+            rightHandError.textContent = '';
+            rightHandError.style.display = 'none';
+
+            loadingDiv.style.display = 'none';
+            lastFetchedMetadata = null;
+        }
+
+        function resetSearch() {
+            if (currentFetchController) {
+                currentFetchController.abort();
+                currentFetchController = null;
+            }
+            currentNftImageLoadId++;
+            currentLeftHandLoadId++;
+            currentRightHandLoadId++;
+
+            deGodIdInput.value = '';
+            clearFetchedDataUI(true);
+
+            handOptionsVisible = false;
+            handControlsContainer.style.display = 'none';
+
+            showLeftHand = false;
+            leftHandBtn.classList.add('off');
+            leftHandBtn.classList.remove('on');
+
+            showRightHand = false;
+            rightHandBtn.classList.add('off');
+            rightHandBtn.classList.remove('on');
+
+            if (document.activeElement !== deGodIdInput) {
+                 deGodIdInput.focus();
+            }
+        }
+
+        function updateOverlayVisibility(overlayType) {
+            let shouldShow = false;
+            if (overlayType === 'left') shouldShow = showLeftHand;
+            else if (overlayType === 'right') shouldShow = showRightHand;
+
+            if ((shouldShow && handOptionsVisible && lastFetchedMetadata && imageStackContainer.style.display !== 'none') || !shouldShow) {
+                displayOverlayImage(overlayType, lastFetchedMetadata, shouldShow);
+            } else if (!handOptionsVisible && (overlayType === 'left' || overlayType === 'right')) {
+                const imgElement = document.getElementById(overlayType === 'left' ? 'leftHandImage' : 'rightHandImage');
+                if (imgElement) {
+                    imgElement.onload = null;
+                    imgElement.onerror = null;
+                    imgElement.src = '';
+                    imgElement.style.display = 'none';
+                }
+            }
+        }
+
+        function displayOverlayImage(overlayType, metadata, shouldShowExplicitly) {
+            let imgElement, errorElement, baseUrl, fileNamePartConstructor, errorMessagePrefix, relevantGlobalLoadIdGetter;
+
+            if (overlayType === 'left') {
+                imgElement = leftHandImage;
+                errorElement = leftHandError;
+                baseUrl = atob(_B64_LEFT_HAND_BASE); // Decode Base64 URL
+                fileNamePartConstructor = (skinVal) => `${encodeURIComponent(skinVal)}.png`;
+                errorMessagePrefix = `"LEFT HAND"`;
+                relevantGlobalLoadIdGetter = () => currentLeftHandLoadId;
+            } else if (overlayType === 'right') {
+                imgElement = rightHandImage;
+                errorElement = rightHandError;
+                baseUrl = atob(_B64_RIGHT_HAND_BASE); // Decode Base64 URL
+                fileNamePartConstructor = (skinVal) => `${encodeURIComponent(skinVal)}.png`;
+                errorMessagePrefix = `"RIGHT HAND"`;
+                relevantGlobalLoadIdGetter = () => currentRightHandLoadId;
+            } else {
+                return;
+            }
+
+            if (!shouldShowExplicitly) {
+                imgElement.onload = null;
+                imgElement.onerror = null;
+                imgElement.src = '';
+                imgElement.style.display = 'none';
+                errorElement.style.display = 'none';
+                errorElement.textContent = '';
+                return;
+            }
+
+            const localLoadId = relevantGlobalLoadIdGetter();
+
+            errorElement.style.display = 'none';
+            errorElement.textContent = '';
+
+            if (!metadata || !metadata.attributes || metadata.attributes.length === 0) {
+                console.warn(`NO METADATA OR ATTRIBUTES ON NFT FOR ${errorMessagePrefix} VARIANT.`);
+                imgElement.style.display = 'none';
+                return;
+            }
+
+            const skinAttribute = metadata.attributes.find(
+                attr => attr.trait_type.toLowerCase() === "skin"
+            );
+
+            if (skinAttribute && skinAttribute.value) {
+                const skinValue = skinAttribute.value;
+                const fileNamePart = fileNamePartConstructor(skinValue);
+                const imageUrl = baseUrl + fileNamePart;
+
+                imgElement.onload = null;
+                imgElement.onerror = null;
+                imgElement.crossOrigin = "Anonymous";
+
+                imgElement.onload = function() {
+                    if (localLoadId !== relevantGlobalLoadIdGetter()) {
+                         console.log(`OLD ${overlayType.toUpperCase()} HAND ONLOAD EVENT IGNORED (CAPTURED ID: ${localLoadId}, CURRENT ID: ${relevantGlobalLoadIdGetter()}).`);
+                        return;
+                    }
+                    imgElement.style.display = 'block';
+                    errorElement.style.display = 'none';
+                }
+                imgElement.onerror = function() {
+                    if (localLoadId !== relevantGlobalLoadIdGetter()) {
+                        console.log(`OLD ${overlayType.toUpperCase()} HAND ONERROR EVENT IGNORED (CAPTURED ID: ${localLoadId}, CURRENT ID: ${relevantGlobalLoadIdGetter()}).`);
+                        return;
+                    }
+                    imgElement.style.display = 'none';
+                    console.error(`${errorMessagePrefix} VARIANT FOR SKIN "${skinValue.toUpperCase()}" NOT FOUND. URL: ${imageUrl}. TRIGGERING RESET.`);
+                    resetSearch();
+                }
+                imgElement.src = imageUrl;
+            } else {
+                imgElement.style.display = 'none';
+                console.warn(`"SKIN" ATTRIBUTE NOT FOUND FOR THIS NFT TO APPLY ${errorMessagePrefix}.`);
+            }
+        }
+
+        // --- Core Logic ---
+        async function fetchDeGod() {
+            const idValueTrimmed = deGodIdInput.value.trim();
+
+            if (currentFetchController) {
+                currentFetchController.abort();
+            }
+            currentFetchController = new AbortController();
+            const { signal } = currentFetchController;
+
+            const localNftImageLoadId = ++currentNftImageLoadId;
+            currentLeftHandLoadId++;
+            currentRightHandLoadId++;
+
+            if (!idValueTrimmed) {
+                clearFetchedDataUI(true);
+                errorDiv.textContent = 'PLEASE ENTER A DEGOD ID.';
+                loadingDiv.style.display = 'none';
+                if (currentFetchController.signal === signal) currentFetchController = null;
+                return;
+            }
+
+            clearFetchedDataUI(false);
+            loadingDiv.style.display = 'block';
+
+            const id = parseInt(idValueTrimmed);
+
+            if (isNaN(id) || id < 1 || id > 10000) {
+                errorDiv.textContent = 'PLEASE ENTER A VALID ID (BETWEEN 1 AND 10000).';
+                loadingDiv.style.display = 'none';
+                clearFetchedDataUI(true);
+                if (currentFetchController.signal === signal) currentFetchController = null;
+                return;
+            }
+
+            const metadataIndex = id - 1;
+            const metadataUrl = `${atob(_B64_METADATA_BASE)}${metadataIndex}.json`; // Decode Base64 URL
+
+            try {
+                const response = await fetch(metadataUrl, { signal });
+                if (!response.ok) {
+                     throw new Error(`FAILED TO FETCH DATA. STATUS: ${response.status}`);
+                }
+                const metadata = await response.json();
+                lastFetchedMetadata = metadata;
+
+                if (metadata && metadata.image) {
+                    nftImage.onload = null;
+                    nftImage.onerror = null;
+                    nftImage.crossOrigin = "Anonymous";
+
+                    nftImage.onload = () => {
+                        if (localNftImageLoadId !== currentNftImageLoadId) {
+                            console.log("OLD NFT IMAGE ONLOAD EVENT IGNORED.");
+                            return;
+                        }
+                        loadingDiv.style.display = 'none';
+                        imageStackContainer.style.display = 'block';
+                        nftImage.alt = `DeGod NFT #${id}`;
+                        downloadBtn.style.display = 'block';
+                        if (handOptionsVisible) {
+                            updateOverlayVisibility('left');
+                            updateOverlayVisibility('right');
+                        }
+                    }
+                    nftImage.onerror = () => {
+                        if (localNftImageLoadId !== currentNftImageLoadId) {
+                            console.log("OLD NFT IMAGE ONERROR EVENT IGNORED.");
+                            return;
+                        }
+                        loadingDiv.style.display = 'none';
+                        errorDiv.textContent = 'FAILED TO LOAD MAIN NFT IMAGE.';
+                        clearFetchedDataUI(true);
+                    }
+                    nftImage.src = metadata.image; // This URL comes from the API, so it's dynamic
+
+                } else {
+                    throw new Error('INVALID METADATA FORMAT OR "IMAGE" FIELD NOT FOUND.');
+                }
+
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    console.log(`FETCH FOR DEGOD ID ${idValueTrimmed} WAS ABORTED.`);
+                    if (localNftImageLoadId === currentNftImageLoadId) {
+                        loadingDiv.style.display = 'none';
+                        if (!deGodIdInput.value.trim()) clearFetchedDataUI(true);
+                    }
+                } else {
+                    console.error("ERROR FETCHING DEGOD:", err);
+                    errorDiv.textContent = `AN ERROR OCCURRED: ${err.message.toUpperCase()}`;
+                    clearFetchedDataUI(true);
+                    loadingDiv.style.display = 'none';
+                }
+            } finally {
+                if (currentFetchController && currentFetchController.signal === signal) {
+                    currentFetchController = null;
+                }
+            }
+        }
+
+        async function handleDownload() {
+            if (!lastFetchedMetadata || !nftImage.src || nftImage.src === PREVIEW_IMAGE_URL || imageStackContainer.style.display === 'none' || !nftImage.complete || nftImage.naturalWidth === 0) {
+                alert("ACTUAL NFT IMAGE NOT FULLY LOADED OR UNAVAILABLE FOR DOWNLOAD.");
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const TARGET_WIDTH = 1000;
+            const TARGET_HEIGHT = 1000;
+            canvas.width = TARGET_WIDTH;
+            canvas.height = TARGET_HEIGHT;
+
+            const idForFilename = deGodIdInput.value || 'NFT';
+
+            const drawImageToCanvas = (imgElement) => {
+                return new Promise((resolve) => {
+                    if (imgElement.complete && imgElement.naturalWidth !== 0 && imgElement.style.display !== 'none') {
+                        const hRatio = TARGET_WIDTH / imgElement.naturalWidth;
+                        const vRatio = TARGET_HEIGHT / imgElement.naturalHeight;
+                        const ratio = Math.min(hRatio, vRatio);
+                        const scaledWidth = imgElement.naturalWidth * ratio;
+                        const scaledHeight = imgElement.naturalHeight * ratio;
+                        const offsetX = (TARGET_WIDTH - scaledWidth) / 2;
+                        const offsetY = (TARGET_HEIGHT - scaledHeight) / 2;
+                        ctx.drawImage(imgElement, offsetX, offsetY, scaledWidth, scaledHeight);
+                        resolve();
+                    } else if (imgElement.src && imgElement.style.display !== 'none') {
+                        const tempImg = new Image();
+                        tempImg.crossOrigin = "Anonymous";
+                        tempImg.onload = () => {
+                           const hRatio = TARGET_WIDTH / tempImg.naturalWidth;
+                           const vRatio = TARGET_HEIGHT / tempImg.naturalHeight;
+                           const ratio = Math.min(hRatio, vRatio);
+                           const scaledWidth = tempImg.naturalWidth * ratio;
+                           const scaledHeight = tempImg.naturalHeight * ratio;
+                           const offsetX = (TARGET_WIDTH - scaledWidth) / 2;
+                           const offsetY = (TARGET_HEIGHT - scaledHeight) / 2;
+                           ctx.drawImage(tempImg, offsetX, offsetY, scaledWidth, scaledHeight);
+                           resolve();
+                        };
+                        tempImg.onerror = () => {
+                            console.warn(`FAILED TO LOAD OVERLAY ${imgElement.alt.toUpperCase()} FOR DOWNLOAD DURING CANVAS DRAW. SKIPPING.`);
+                            resolve();
+                        };
+                        tempImg.src = imgElement.src;
+                    } else {
+                        resolve();
+                    }
+                });
+            };
+
+            let filenameParts = [`DEGOD_${idForFilename}`];
+
+            try {
+                await drawImageToCanvas(nftImage);
+
+                if (showLeftHand && handOptionsVisible) {
+                    await drawImageToCanvas(leftHandImage);
+                    if (leftHandImage.style.display !== 'none' && leftHandImage.src) {
+                        filenameParts.push("LEFTHAND");
+                    }
+                }
+                if (showRightHand && handOptionsVisible) {
+                    await drawImageToCanvas(rightHandImage);
+                    if (rightHandImage.style.display !== 'none' && rightHandImage.src) {
+                         filenameParts.push("RIGHTHAND");
+                    }
+                }
+
+                filenameParts.push(`${TARGET_WIDTH}X${TARGET_HEIGHT}.PNG`);
+                const finalFilename = filenameParts.join('_').replace(/__+/g, '_');
+
+                triggerCanvasDownload(canvas, finalFilename);
+
+            } catch (e) {
+                console.error("ERROR DURING IMAGE COMPOSITING FOR DOWNLOAD:", e);
+                alert("AN ERROR OCCURRED WHILE PREPARING THE IMAGE FOR DOWNLOAD.");
+            }
+        }
+
+        function triggerCanvasDownload(canvas, filename) {
+            try {
+                const dataURL = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (e) {
+                console.error("ERROR CREATING DATA URL OR DOWNLOADING:", e);
+                alert("FAILED TO CREATE IMAGE FOR DOWNLOAD. POSSIBLE CORS ISSUE.");
+            }
+        }
+    </script>
+
+</body>
+</html>
