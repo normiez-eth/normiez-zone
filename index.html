@@ -8,21 +8,19 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             margin: 20px;
-            /* MODIFIED: Background image instead of solid color */
             background-image: url('https://raw.githubusercontent.com/zio06/degods/refs/heads/assets/background.jpg');
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            background-attachment: fixed; /* Keeps background fixed during scroll */
-            color: white; /* Kept text white for contrast against potentially dark parts of image */
+            background-attachment: fixed;
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             line-height: 1.5;
-            text-shadow: 0 0 3px rgba(0,0,0,0.5); /* Added subtle shadow for better readability on image */
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
         .container {
-            /* MODIFIED: Transparent background */
             background-color: transparent;
             padding: 20px;
             border-radius: 8px;
@@ -31,9 +29,6 @@
             text-align: center;
             text-transform: uppercase;
             color: white;
-             /* Optional: add a very subtle backdrop for readability if needed */
-            /* backdrop-filter: blur(2px) brightness(0.9); */
-            /* background-color: rgba(0,0,0,0.1); */
         }
 
         .header-image-container {
@@ -51,23 +46,12 @@
             position: absolute;
             display: block;
             border-radius: 50%;
-            z-index: 5;
+            z-index: 10;
         }
-        #headerLinkTwitter {
-            top: 65%;
-            left: 9%;
-            width: 10%;
-            height: 18%;
-        }
-        #headerLinkDegods {
-            top: 65%;
-            left: 26%;
-            width: 10%;
-            height: 18%;
-        }
+        #headerLinkTwitter { top: 65%; left: 9%; width: 10%; height: 18%; }
+        #headerLinkDegods { top: 65%; left: 26%; width: 10%; height: 18%; }
 
-
-        .search-controls {
+        .search-controls, .overlay-toggle-controls, .hand-controls-container {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -76,21 +60,19 @@
         }
         input[type="number"] {
             padding: 10px;
-            /* MODIFIED: Search bar styling */
-            border: 1px solid #ccc; /* Lighter border */
+            border: 1px solid #ccc;
             border-radius: 4px;
             flex: 1 1 auto;
             min-width: 150px;
             box-sizing: border-box;
             font-size: 1rem;
             text-transform: none;
-            background-color: white; /* White background */
-            color: #333; /* Dark text color */
+            background-color: white;
+            color: #333;
         }
         input[type="number"]::placeholder {
             text-transform: uppercase;
-            /* MODIFIED: Placeholder color */
-            color: #757575; /* Darker placeholder text */
+            color: #757575;
         }
 
         button, .action-button {
@@ -113,53 +95,24 @@
         #searchBtn:hover, #toggleHandOptionsBtn:hover, #downloadBtn:hover {
             background-color: #0A7A9A;
         }
+        #resetAppBtn { background-color: #f0ad4e; }
+        #resetAppBtn:hover { background-color: #ec971f; }
 
-        #resetAppBtn {
-            background-color: #f0ad4e;
-        }
-        #resetAppBtn:hover {
-            background-color: #ec971f;
-        }
+        .overlay-toggle-controls { flex-wrap: wrap; margin-bottom: 10px; }
+        #toggleHandOptionsBtn, #toggleSmileBtn { font-size: 0.9em; padding: 8px 12px; }
 
-        #toggleHandOptionsBtn {
-            margin-bottom: 10px;
-            font-size: 0.9em;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: fit-content;
-            padding: 8px 12px;
-        }
+        .toggle-button.off { background-color: #f0ad4e; }
+        .toggle-button.off:hover { background-color: #ec971f; }
+        .toggle-button.on { background-color: #5cb85c; }
+        .toggle-button.on:hover { background-color: #4cae4c; }
+        #toggleSmileBtn:not(.on):not(.off) { background-color: #0D98BA; }
+        #toggleSmileBtn:not(.on):not(.off):hover { background-color: #0A7A9A; }
 
-        .hand-controls-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .hand-toggle-button {
-            padding: 8px 12px;
-            font-size: 0.9em;
-            width: 120px;
-        }
 
-        .hand-toggle-button.off {
-            background-color: #f0ad4e;
-        }
-        .hand-toggle-button.off:hover {
-            background-color: #ec971f;
-        }
-        .hand-toggle-button.on {
-            background-color: #5cb85c;
-        }
-        .hand-toggle-button.on:hover {
-            background-color: #4cae4c;
-        }
+        .hand-controls-container { margin-bottom: 20px; width: 100%; }
+        .hand-toggle-button { padding: 8px 12px; font-size: 0.9em; width: 120px; }
 
-        #result {
-            margin-top: 10px;
-        }
-
+        #result { margin-top: 10px; }
         .image-stack-container {
             position: relative;
             width: 100%;
@@ -168,9 +121,7 @@
             margin: 15px auto;
             border-radius: 8px;
             overflow: hidden;
-            /* display: block; Set in HTML now */
         }
-
         .image-stack-container img {
             display: block;
             position: absolute;
@@ -183,34 +134,31 @@
             pointer-events: none;
         }
 
-        #nftImage {
-            position: relative;
-            z-index: 1;
-            /* MODIFIED: Border color transparent */
-            border: 1px solid transparent; /* Or border: none; if you want no border at all */
-        }
+        /* Z-INDEX UPDATED HERE */
+        #nftImage { z-index: 1; }
+        #backgroundPatchImage { z-index: 2; }
+        #specialtyPatchImage { z-index: 3; } /* Wings */
+        #neckMythicMambaOverlayImage { z-index: 4; }
+        #smileOverlayImage { z-index: 5; }
+        #eyesOverlayImage { z-index: 6; }
+        #specialtyForeheadOverlayImage { z-index: 7; } /* NEW: Forehead Diamond/Third Eye */
+        #mouthFeatureOverlayImage { z-index: 8; }
+        #leftHandImage { z-index: 9; }
+        #rightHandImage { z-index: 10; }
 
-        #leftHandImage { z-index: 3; }
-        #rightHandImage { z-index: 4; }
 
-        .error, .hand-error {
-            color: #ffff00; /* Yellow for errors, might need adjustment for readability */
+        .error-message {
+            color: #ffff00;
             margin-top: 10px;
             font-size: 0.9em;
-            text-shadow: 0 0 3px rgba(0,0,0,0.7); /* Added shadow for errors too */
+            text-shadow: 0 0 3px rgba(0,0,0,0.7);
         }
-        .loading {
-            margin-top: 10px;
-            font-style: italic;
-            color: white;
-        }
+        .loading { margin-top: 10px; font-style: italic; color: white; }
         #downloadBtn {
             display: block;
             width: -moz-fit-content;
             width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 20px;
+            margin: 20px auto 0;
         }
     </style>
 </head>
@@ -218,7 +166,6 @@
 
     <div class="container">
         <div class="header-image-container">
-            <!-- MODIFIED: Set src via JS -->
             <img id="headerImage" src="" alt="NORMIEZ ZONE HEADER">
             <a id="headerLinkTwitter" class="header-link-overlay" href="https://x.com/normiez_eth" target="_blank" rel="noopener noreferrer" aria-label="Visit Normiez on X"></a>
             <a id="headerLinkDegods" class="header-link-overlay" href="https://degods.com" target="_blank" rel="noopener noreferrer" aria-label="Visit Degods.com"></a>
@@ -230,463 +177,566 @@
             <button id="resetAppBtn">RESET</button>
         </div>
 
-        <button id="toggleHandOptionsBtn">MIDDLE FINGERS</button>
-
-        <div id="handControlsContainer" class="hand-controls-container" style="display: none;">
-            <button id="rightHandBtn" class="hand-toggle-button off">RIGHT</button>
-            <button id="leftHandBtn" class="hand-toggle-button off">LEFT</button>
+        <div class="overlay-toggle-controls">
+            <button id="toggleSmileBtn" class="action-button toggle-button">SMILE</button>
+            <button id="toggleHandOptionsBtn">MIDDLE FINGERS</button>
         </div>
 
+        <div id="handControlsContainer" class="hand-controls-container" style="display: none;">
+            <button id="rightHandBtn" class="hand-toggle-button toggle-button off">RIGHT</button>
+            <button id="leftHandBtn" class="hand-toggle-button toggle-button off">LEFT</button>
+        </div>
 
         <div id="result">
             <div id="loading" class="loading" style="display:none;">LOADING DATA...</div>
-            <div id="error" class="error"></div>
+            <div id="error" class="error-message"></div>
 
             <div id="imageStackContainer" class="image-stack-container" style="display: block;">
-                 <!-- MODIFIED: Set src via JS -->
                 <img id="nftImage" src="" alt="PREVIEW IMAGE">
+                <img id="backgroundPatchImage" src="" alt="Background Patch" style="display:none;">
+                <img id="specialtyPatchImage" src="" alt="Specialty Patch" style="display:none;"> {/* Wings etc. */}
+                <img id="neckMythicMambaOverlayImage" src="" alt="Mythic Mamba Neck Overlay" style="display:none;">
+                <img id="smileOverlayImage" src="" alt="Smile Overlay" style="display:none;">
+                <img id="eyesOverlayImage" src="" alt="Eyes Overlay" style="display:none;">
+                <img id="specialtyForeheadOverlayImage" src="" alt="Specialty Forehead Overlay" style="display:none;">
+                <img id="mouthFeatureOverlayImage" src="" alt="Mouth Feature Overlay" style="display:none;">
                 <img id="leftHandImage" src="" alt="Left Hand Overlay" style="display:none;">
                 <img id="rightHandImage" src="" alt="Right Hand Overlay" style="display:none;">
             </div>
-            <p id="leftHandError" class="hand-error" style="display:none;"></p>
-            <p id="rightHandError" class="hand-error" style="display:none;"></p>
+            <p id="smileError" class="error-message" style="display:none;"></p>
+            <p id="eyesError" class="error-message" style="display:none;"></p>
+            <p id="mouthFeatureError" class="error-message" style="display:none;"></p>
+            <p id="leftHandError" class="error-message" style="display:none;"></p>
+            <p id="rightHandError" class="error-message" style="display:none;"></p>
             <button id="downloadBtn" class="action-button" style="display:none;">DOWNLOAD IMAGE</button>
         </div>
     </div>
 
     <script>
         // --- Obfuscated URLs ---
-        const _B64_HEADER_IMG = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2Fzc2V0cy9oZWFkZXIucG5n";
-        const _B64_PREVIEW_IMG = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2Fzc2V0cy9wcmV2aWV3JTIwZGVnb2QucG5n";
-        const _B64_LEFT_HAND_BASE = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2xlZnQtaGFuZC8=";
-        const _B64_RIGHT_HAND_BASE = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL3JpZ2h0LWhhbmQv";
-        const _B64_METADATA_BASE = "aHR0cHM6Ly9tZXRhZGF0YS5kZWdvZHMuY29tL2cv";
+        const B64_URLS = {
+            HEADER_IMG: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2Fzc2V0cy9oZWFkZXIucG5n",
+            PREVIEW_IMG: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2Fzc2V0cy9wcmV2aWV3JTIwZGVnb2QucG5n",
+            LEFT_HAND_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2xlZnQtaGFuZC8=",
+            RIGHT_HAND_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL3JpZ2h0LWhhbmQv",
+            SMILE_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9TbWlsZS1kZWdvZHMtczIv",
+            EYES_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy1zMi9yZWZzL2hlYWRzL0V5ZXMv",
+            MOUTH_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9tb3V0aC1kZWdvZHMtczIv",
+            METADATA_BASE: "aHR0cHM6Ly9tZXRhZGF0YS5kZWdvZHMuY29tL2cv",
+            BACKGROUND_PATCH_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2JhY2tncm91bmQtcGF0Y2gtczIv",
+            SPECIALTY_PATCH_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL1NwZWNpYWx0eS1wYXRjaC1zMi8=", // Wings, etc.
+            NECK_MYTHIC_MAMBA_OVERLAY: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL1NwZWNpYWx0eS1wYXRjaC1zMi9NeXRoaWMlMjBNYW1iYS5wbmc=",
+            SPECIALTY_FOREHEAD_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL3NwZWNpYWx0eS1zMi8=" // For Forehead Diamond, Third Eye
+        };
+        const DECODED_URLS = Object.fromEntries(Object.entries(B64_URLS).map(([key, value]) => [key, atob(value)]));
 
-        let showLeftHand = false;
-        let showRightHand = false;
-        let handOptionsVisible = false;
-        let lastFetchedMetadata = null;
-
-        let currentFetchController = null;
-        let currentNftImageLoadId = 0;
-        let currentLeftHandLoadId = 0;
-        let currentRightHandLoadId = 0;
-
-        // Use decoded URLs
-        const PREVIEW_IMAGE_URL = atob(_B64_PREVIEW_IMG);
+        const TRIGGER_MOUTH_TRAIT_VALUES = ["Clown Nose", "Goatee", "Hipster Beard", "Porn Stashe", "Santa Beard"];
         const PREVIEW_IMAGE_ALT = "PREVIEW IMAGE";
+        const SPECIALTY_PATCH_TRIGGER_VALUES = ["Mythic Wings", "Devil Wings", "Angel Wings"]; // Wings, etc.
+        const NECK_TRAIT_VALUE_MYTHIC_MAMBA = "Mythic Mamba";
+        const SPECIALTY_FOREHEAD_TRIGGER_VALUES = ["Forehead Diamond", "Third Eye"];
 
-        const deGodIdInput = document.getElementById('deGodIdInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const resetAppBtn = document.getElementById('resetAppBtn');
 
-        const toggleHandOptionsBtn = document.getElementById('toggleHandOptionsBtn');
-        const handControlsContainer = document.getElementById('handControlsContainer');
-        const leftHandBtn = document.getElementById('leftHandBtn');
-        const rightHandBtn = document.getElementById('rightHandBtn');
+        // --- State ---
+        let appState = {
+            showSmile: false,
+            showLeftHand: false,
+            showRightHand: false,
+            handOptionsVisible: false,
+            lastFetchedMetadata: null,
+            currentMouthTraitValue: null,
+            currentEyesTraitValue: null,
+            currentFetchController: null,
+            loadCounters: { nft: 0, leftHand: 0, rightHand: 0, smile: 0, eyes: 0, mouthFeature: 0, backgroundPatch: 0, specialtyPatch: 0, neckMythicMambaOverlay: 0, specialtyForeheadOverlay: 0 }
+        };
 
-        const imageStackContainer = document.getElementById('imageStackContainer');
-        const nftImage = document.getElementById('nftImage');
-        const leftHandImage = document.getElementById('leftHandImage');
-        const rightHandImage = document.getElementById('rightHandImage');
+        // --- DOM Elements ---
+        const dom = {
+            deGodIdInput: document.getElementById('deGodIdInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            resetAppBtn: document.getElementById('resetAppBtn'),
+            toggleSmileBtn: document.getElementById('toggleSmileBtn'),
+            toggleHandOptionsBtn: document.getElementById('toggleHandOptionsBtn'),
+            handControlsContainer: document.getElementById('handControlsContainer'),
+            leftHandBtn: document.getElementById('leftHandBtn'),
+            rightHandBtn: document.getElementById('rightHandBtn'),
+            imageStackContainer: document.getElementById('imageStackContainer'),
+            nftImage: document.getElementById('nftImage'),
+            smileOverlayImage: document.getElementById('smileOverlayImage'),
+            eyesOverlayImage: document.getElementById('eyesOverlayImage'),
+            mouthFeatureOverlayImage: document.getElementById('mouthFeatureOverlayImage'),
+            leftHandImage: document.getElementById('leftHandImage'),
+            rightHandImage: document.getElementById('rightHandImage'),
+            backgroundPatchImage: document.getElementById('backgroundPatchImage'),
+            specialtyPatchImage: document.getElementById('specialtyPatchImage'), // Wings
+            neckMythicMambaOverlayImage: document.getElementById('neckMythicMambaOverlayImage'),
+            specialtyForeheadOverlayImage: document.getElementById('specialtyForeheadOverlayImage'),
+            errorDiv: document.getElementById('error'),
+            smileError: document.getElementById('smileError'),
+            eyesError: document.getElementById('eyesError'),
+            mouthFeatureError: document.getElementById('mouthFeatureError'),
+            leftHandError: document.getElementById('leftHandError'),
+            rightHandError: document.getElementById('rightHandError'),
+            loadingDiv: document.getElementById('loading'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            headerImageElem: document.getElementById('headerImage')
+        };
 
-        const errorDiv = document.getElementById('error');
-        const leftHandError = document.getElementById('leftHandError');
-        const rightHandError = document.getElementById('rightHandError');
-
-        const loadingDiv = document.getElementById('loading');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const headerImageElem = document.getElementById('headerImage'); // Get header image element
-
-        // --- Initialize static images ---
-        headerImageElem.src = atob(_B64_HEADER_IMG);
-        nftImage.src = PREVIEW_IMAGE_URL; // Initial preview
-        nftImage.alt = PREVIEW_IMAGE_ALT;
-
+        // --- Initialization ---
+        dom.headerImageElem.src = DECODED_URLS.HEADER_IMG;
+        dom.nftImage.src = DECODED_URLS.PREVIEW_IMG;
+        dom.nftImage.alt = PREVIEW_IMAGE_ALT;
 
         // --- Event Listeners ---
-        searchBtn.addEventListener('click', fetchDeGod);
-        resetAppBtn.addEventListener('click', resetSearch);
+        dom.searchBtn.addEventListener('click', fetchDeGod);
+        dom.resetAppBtn.addEventListener('click', resetSearch);
+        dom.deGodIdInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); fetchDeGod(); } });
+        dom.downloadBtn.addEventListener('click', handleDownload);
 
-        toggleHandOptionsBtn.addEventListener('click', () => {
-            handOptionsVisible = !handOptionsVisible;
-            handControlsContainer.style.display = handOptionsVisible ? 'flex' : 'none';
+        dom.toggleSmileBtn.addEventListener('click', () => {
+            appState.showSmile = !appState.showSmile;
+            updateToggleButton(dom.toggleSmileBtn, appState.showSmile);
+            updateOverlayVisibility('smile');
+        });
 
-            if (!handOptionsVisible) {
-                if (showLeftHand) {
-                    showLeftHand = false;
-                    leftHandBtn.classList.add('off');
-                    leftHandBtn.classList.remove('on');
-                    updateOverlayVisibility('left');
-                }
-                if (showRightHand) {
-                    showRightHand = false;
-                    rightHandBtn.classList.add('off');
-                    rightHandBtn.classList.remove('on');
-                    updateOverlayVisibility('right');
-                }
+        dom.toggleHandOptionsBtn.addEventListener('click', () => {
+            appState.handOptionsVisible = !appState.handOptionsVisible;
+            dom.handControlsContainer.style.display = appState.handOptionsVisible ? 'flex' : 'none';
+            if (!appState.handOptionsVisible) {
+                ['left', 'right'].forEach(hand => {
+                    const handStateKey = hand === 'left' ? 'showLeftHand' : 'showRightHand';
+                    const handBtn = hand === 'left' ? dom.leftHandBtn : dom.rightHandBtn;
+                    if (appState[handStateKey]) {
+                        appState[handStateKey] = false;
+                        updateToggleButton(handBtn, false);
+                        updateOverlayVisibility(hand);
+                    }
+                });
+            } else {
+                if (appState.showLeftHand) updateOverlayVisibility('left');
+                if (appState.showRightHand) updateOverlayVisibility('right');
             }
         });
 
-        leftHandBtn.addEventListener('click', () => {
-            showLeftHand = !showLeftHand;
-            leftHandBtn.classList.toggle('off', !showLeftHand);
-            leftHandBtn.classList.toggle('on', showLeftHand);
+        dom.leftHandBtn.addEventListener('click', () => {
+            appState.showLeftHand = !appState.showLeftHand;
+            updateToggleButton(dom.leftHandBtn, appState.showLeftHand);
             updateOverlayVisibility('left');
         });
 
-        rightHandBtn.addEventListener('click', () => {
-            showRightHand = !showRightHand;
-            rightHandBtn.classList.toggle('off', !showRightHand);
-            rightHandBtn.classList.toggle('on', showRightHand);
+        dom.rightHandBtn.addEventListener('click', () => {
+            appState.showRightHand = !appState.showRightHand;
+            updateToggleButton(dom.rightHandBtn, appState.showRightHand);
             updateOverlayVisibility('right');
         });
 
-        downloadBtn.addEventListener('click', handleDownload);
-
-        deGodIdInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                fetchDeGod();
-            }
-        });
-
         // --- UI Update Functions ---
+        function updateToggleButton(button, isActive) {
+            button.classList.toggle('on', isActive);
+            button.classList.toggle('off', !isActive);
+        }
+
+        function clearImage(imgElement, errorElement = null) {
+            if (!imgElement) return;
+            imgElement.onload = null; imgElement.onerror = null;
+            imgElement.src = ''; imgElement.style.display = 'none';
+            if (errorElement) {
+                errorElement.textContent = ''; errorElement.style.display = 'none';
+            }
+        }
+
+        function clearAllOverlays() {
+            [
+                {img: dom.smileOverlayImage, err: dom.smileError},
+                {img: dom.eyesOverlayImage, err: dom.eyesError},
+                {img: dom.mouthFeatureOverlayImage, err: dom.mouthFeatureError},
+                {img: dom.leftHandImage, err: dom.leftHandError},
+                {img: dom.rightHandImage, err: dom.rightHandError},
+                {img: dom.backgroundPatchImage },
+                {img: dom.specialtyPatchImage }, // Wings
+                {img: dom.neckMythicMambaOverlayImage },
+                {img: dom.specialtyForeheadOverlayImage }
+            ].forEach(item => clearImage(item.img, item.err));
+        }
+
         function clearFetchedDataUI(showPreview = false) {
             if (showPreview) {
-                imageStackContainer.style.display = 'block';
-                nftImage.src = PREVIEW_IMAGE_URL; // Use decoded constant
-                nftImage.alt = PREVIEW_IMAGE_ALT;
+                dom.imageStackContainer.style.display = 'block';
+                dom.nftImage.src = DECODED_URLS.PREVIEW_IMG;
+                dom.nftImage.alt = PREVIEW_IMAGE_ALT;
+                dom.nftImage.style.display = 'block';
             } else {
-                imageStackContainer.style.display = 'none';
-                nftImage.src = '';
-                nftImage.alt = 'DeGod NFT';
+                dom.imageStackContainer.style.display = 'none';
+                clearImage(dom.nftImage);
             }
+            clearAllOverlays();
 
-            nftImage.onload = null;
-            nftImage.onerror = null;
-
-            [leftHandImage, rightHandImage].forEach(img => {
-                img.onload = null;
-                img.onerror = null;
-                img.src = '';
-                img.style.display = 'none';
-            });
-
-            downloadBtn.style.display = 'none';
-            errorDiv.textContent = '';
-            leftHandError.textContent = '';
-            leftHandError.style.display = 'none';
-            rightHandError.textContent = '';
-            rightHandError.style.display = 'none';
-
-            loadingDiv.style.display = 'none';
-            lastFetchedMetadata = null;
+            dom.downloadBtn.style.display = 'none';
+            dom.errorDiv.textContent = '';
+            dom.loadingDiv.style.display = 'none';
+            appState.lastFetchedMetadata = null;
+            appState.currentMouthTraitValue = null;
+            appState.currentEyesTraitValue = null;
         }
 
         function resetSearch() {
-            if (currentFetchController) {
-                currentFetchController.abort();
-                currentFetchController = null;
-            }
-            currentNftImageLoadId++;
-            currentLeftHandLoadId++;
-            currentRightHandLoadId++;
+            if (appState.currentFetchController) { appState.currentFetchController.abort(); appState.currentFetchController = null; }
+            Object.keys(appState.loadCounters).forEach(key => appState.loadCounters[key]++);
 
-            deGodIdInput.value = '';
+            dom.deGodIdInput.value = '';
             clearFetchedDataUI(true);
 
-            handOptionsVisible = false;
-            handControlsContainer.style.display = 'none';
+            appState.showSmile = false;
+            dom.toggleSmileBtn.classList.remove('on', 'off');
 
-            showLeftHand = false;
-            leftHandBtn.classList.add('off');
-            leftHandBtn.classList.remove('on');
+            appState.handOptionsVisible = false;
+            dom.handControlsContainer.style.display = 'none';
+            appState.showLeftHand = false; updateToggleButton(dom.leftHandBtn, false);
+            appState.showRightHand = false; updateToggleButton(dom.rightHandBtn, false);
 
-            showRightHand = false;
-            rightHandBtn.classList.add('off');
-            rightHandBtn.classList.remove('on');
-
-            if (document.activeElement !== deGodIdInput) {
-                 deGodIdInput.focus();
-            }
+            if (document.activeElement !== dom.deGodIdInput) dom.deGodIdInput.focus();
         }
 
         function updateOverlayVisibility(overlayType) {
             let shouldShow = false;
-            if (overlayType === 'left') shouldShow = showLeftHand;
-            else if (overlayType === 'right') shouldShow = showRightHand;
+            let isHandOverlay = false;
 
-            if ((shouldShow && handOptionsVisible && lastFetchedMetadata && imageStackContainer.style.display !== 'none') || !shouldShow) {
-                displayOverlayImage(overlayType, lastFetchedMetadata, shouldShow);
-            } else if (!handOptionsVisible && (overlayType === 'left' || overlayType === 'right')) {
-                const imgElement = document.getElementById(overlayType === 'left' ? 'leftHandImage' : 'rightHandImage');
-                if (imgElement) {
-                    imgElement.onload = null;
-                    imgElement.onerror = null;
-                    imgElement.src = '';
-                    imgElement.style.display = 'none';
+            if (overlayType === 'smile') shouldShow = appState.showSmile;
+            else if (overlayType === 'left') { shouldShow = appState.showLeftHand; isHandOverlay = true; }
+            else if (overlayType === 'right') { shouldShow = appState.showRightHand; isHandOverlay = true; }
+
+            const canDisplay = appState.lastFetchedMetadata && dom.imageStackContainer.style.display !== 'none';
+            const displayConditionsMet = shouldShow && canDisplay && (isHandOverlay ? appState.handOptionsVisible : true);
+
+            if (overlayType === 'smile') {
+                displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, shouldShow);
+            } else if (isHandOverlay) {
+                displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, displayConditionsMet);
+            }
+        }
+
+        function updateFacialFeatureOverlays(metadata) {
+            clearImage(dom.mouthFeatureOverlayImage, dom.mouthFeatureError);
+            appState.currentMouthTraitValue = null;
+            clearImage(dom.backgroundPatchImage);
+            clearImage(dom.specialtyPatchImage); // Wings
+            clearImage(dom.neckMythicMambaOverlayImage);
+            clearImage(dom.specialtyForeheadOverlayImage);
+
+            loadTraitSpecificOverlay(metadata, "eyes", dom.eyesOverlayImage, dom.eyesError, DECODED_URLS.EYES_BASE, 'eyes',
+                (val) => val && val.toUpperCase() !== "NONE", "EYES OVERLAY", // Added more specific prefix
+                (val) => { appState.currentEyesTraitValue = val; },
+                () => appState.currentEyesTraitValue = null
+            );
+
+            if (!metadata) return;
+
+            const mouthAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "mouth");
+            const specialtyAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "specialty");
+            const backgroundAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "background");
+            const neckAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "neck");
+
+            if (mouthAttribute && mouthAttribute.value && TRIGGER_MOUTH_TRAIT_VALUES.includes(mouthAttribute.value)) {
+                loadTraitSpecificOverlay(metadata, "mouth", dom.mouthFeatureOverlayImage, dom.mouthFeatureError, DECODED_URLS.MOUTH_BASE, 'mouthFeature',
+                    (val) => TRIGGER_MOUTH_TRAIT_VALUES.includes(val), "MOUTH FEATURE OVERLAY", // Added more specific prefix
+                    (val) => { appState.currentMouthTraitValue = val; },
+                    () => appState.currentMouthTraitValue = null
+                );
+            }
+
+            if (neckAttribute && neckAttribute.value === NECK_TRAIT_VALUE_MYTHIC_MAMBA) {
+                const mythicMambaUrl = DECODED_URLS.NECK_MYTHIC_MAMBA_OVERLAY;
+                const localLoadId = ++appState.loadCounters.neckMythicMambaOverlay;
+                dom.neckMythicMambaOverlayImage.crossOrigin = "Anonymous";
+                dom.neckMythicMambaOverlayImage.onload = () => {
+                    if (localLoadId === appState.loadCounters.neckMythicMambaOverlay) {
+                        dom.neckMythicMambaOverlayImage.style.display = 'block';
+                    }
+                };
+                dom.neckMythicMambaOverlayImage.onerror = () => {
+                    if (localLoadId === appState.loadCounters.neckMythicMambaOverlay) {
+                        clearImage(dom.neckMythicMambaOverlayImage);
+                        console.warn(`Failed to load Mythic Mamba Neck Overlay from ${mythicMambaUrl}`);
+                    }
+                };
+                dom.neckMythicMambaOverlayImage.src = mythicMambaUrl;
+            }
+
+            let specialtyPatchDisplayed = false; // For wings, etc.
+            if (specialtyAttribute && specialtyAttribute.value && SPECIALTY_PATCH_TRIGGER_VALUES.includes(specialtyAttribute.value)) {
+                loadTraitSpecificOverlay(metadata, "specialty", dom.specialtyPatchImage, null, DECODED_URLS.SPECIALTY_PATCH_BASE, 'specialtyPatch',
+                    (val) => SPECIALTY_PATCH_TRIGGER_VALUES.includes(val), "SPECIALTY PATCH (WINGS)"
+                );
+                specialtyPatchDisplayed = true;
+            }
+
+            if (specialtyAttribute && specialtyAttribute.value && SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(specialtyAttribute.value)) {
+                 loadTraitSpecificOverlay(metadata, "specialty", dom.specialtyForeheadOverlayImage, null, DECODED_URLS.SPECIALTY_FOREHEAD_BASE, 'specialtyForeheadOverlay',
+                    (val) => SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(val), "SPECIALTY FOREHEAD OVERLAY"
+                );
+            }
+
+
+            if (!specialtyPatchDisplayed) { // Only show background patch if no specialty wings patch is shown
+                if (backgroundAttribute && backgroundAttribute.value && backgroundAttribute.value.toUpperCase() !== "NONE") {
+                     loadTraitSpecificOverlay(metadata, "background", dom.backgroundPatchImage, null, DECODED_URLS.BACKGROUND_PATCH_BASE, 'backgroundPatch',
+                        (val) => val && val.toUpperCase() !== "NONE", "BACKGROUND PATCH"
+                    );
                 }
             }
         }
 
-        function displayOverlayImage(overlayType, metadata, shouldShowExplicitly) {
-            let imgElement, errorElement, baseUrl, fileNamePartConstructor, errorMessagePrefix, relevantGlobalLoadIdGetter;
 
-            if (overlayType === 'left') {
-                imgElement = leftHandImage;
-                errorElement = leftHandError;
-                baseUrl = atob(_B64_LEFT_HAND_BASE); // Decode Base64 URL
-                fileNamePartConstructor = (skinVal) => `${encodeURIComponent(skinVal)}.png`;
-                errorMessagePrefix = `"LEFT HAND"`;
-                relevantGlobalLoadIdGetter = () => currentLeftHandLoadId;
-            } else if (overlayType === 'right') {
-                imgElement = rightHandImage;
-                errorElement = rightHandError;
-                baseUrl = atob(_B64_RIGHT_HAND_BASE); // Decode Base64 URL
-                fileNamePartConstructor = (skinVal) => `${encodeURIComponent(skinVal)}.png`;
-                errorMessagePrefix = `"RIGHT HAND"`;
-                relevantGlobalLoadIdGetter = () => currentRightHandLoadId;
+        function loadTraitSpecificOverlay(metadata, traitType, imgElement, errorElement, baseUrl, loadCounterKey, valueValidator, errorMessagePrefix = traitType.toUpperCase(), onFoundCallback = null, onClearCallback = null) {
+            clearImage(imgElement, errorElement);
+            if(onClearCallback) onClearCallback();
+
+            if (!metadata || !metadata.attributes || metadata.attributes.length === 0) return;
+
+            const attribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === traitType.toLowerCase());
+
+            if (attribute && attribute.value && valueValidator(attribute.value)) {
+                const traitValue = attribute.value;
+                if(onFoundCallback) onFoundCallback(traitValue);
+
+                const fileName = `${encodeURIComponent(traitValue)}.png`;
+                const imageUrl = baseUrl + fileName;
+                const localLoadId = ++appState.loadCounters[loadCounterKey];
+
+                imgElement.crossOrigin = "Anonymous";
+                imgElement.onload = () => {
+                    if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
+                    imgElement.style.display = 'block';
+                };
+                imgElement.onerror = () => {
+                    if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
+                    clearImage(imgElement);
+                    console.warn(`${errorMessagePrefix} overlay asset for "${traitValue}" not found at ${imageUrl}`);
+                    if(onClearCallback) onClearCallback();
+                };
+                imgElement.src = imageUrl;
             } else {
-                return;
+                if (attribute && attribute.value) {
+                     // console.log(`Trait "${traitType}" with value "${attribute.value}" did not pass validator for ${errorMessagePrefix}.`);
+                }
             }
+        }
+
+        function displayUserToggledOverlayImage(overlayType, metadata, shouldShowExplicitly) {
+            let imgElement, errorElement, baseUrl, loadCounterKey, errorMessagePrefix;
+            const baseAssetType = "skin";
+
+            if (overlayType === 'smile') {
+                imgElement = dom.smileOverlayImage; errorElement = dom.smileError; baseUrl = DECODED_URLS.SMILE_BASE;
+                loadCounterKey = 'smile'; errorMessagePrefix = "SMILE OVERLAY";
+            } else if (overlayType === 'left') {
+                imgElement = dom.leftHandImage; errorElement = dom.leftHandError; baseUrl = DECODED_URLS.LEFT_HAND_BASE;
+                loadCounterKey = 'leftHand'; errorMessagePrefix = "LEFT HAND";
+            } else if (overlayType === 'right') {
+                imgElement = dom.rightHandImage; errorElement = dom.rightHandError; baseUrl = DECODED_URLS.RIGHT_HAND_BASE;
+                loadCounterKey = 'rightHand'; errorMessagePrefix = "RIGHT HAND";
+            } else { return; }
 
             if (!shouldShowExplicitly) {
-                imgElement.onload = null;
-                imgElement.onerror = null;
-                imgElement.src = '';
-                imgElement.style.display = 'none';
-                errorElement.style.display = 'none';
-                errorElement.textContent = '';
+                clearImage(imgElement, errorElement);
+                if (overlayType === 'smile') updateFacialFeatureOverlays(null);
                 return;
             }
 
-            const localLoadId = relevantGlobalLoadIdGetter();
+            const localLoadId = ++appState.loadCounters[loadCounterKey];
+            if (errorElement) { errorElement.style.display = 'none'; errorElement.textContent = ''; }
 
-            errorElement.style.display = 'none';
-            errorElement.textContent = '';
 
             if (!metadata || !metadata.attributes || metadata.attributes.length === 0) {
-                console.warn(`NO METADATA OR ATTRIBUTES ON NFT FOR ${errorMessagePrefix} VARIANT.`);
-                imgElement.style.display = 'none';
+                console.warn(`NO METADATA FOR ${errorMessagePrefix} VARIANT.`);
+                clearImage(imgElement);
+                if (overlayType === 'smile') updateFacialFeatureOverlays(null);
                 return;
             }
 
-            const skinAttribute = metadata.attributes.find(
-                attr => attr.trait_type.toLowerCase() === "skin"
-            );
+            const attribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === baseAssetType);
 
-            if (skinAttribute && skinAttribute.value) {
-                const skinValue = skinAttribute.value;
-                const fileNamePart = fileNamePartConstructor(skinValue);
-                const imageUrl = baseUrl + fileNamePart;
+            if (attribute && attribute.value) {
+                const attributeValue = attribute.value;
+                const fileName = `${encodeURIComponent(attributeValue)}.png`;
+                const imageUrl = baseUrl + fileName;
 
-                imgElement.onload = null;
-                imgElement.onerror = null;
                 imgElement.crossOrigin = "Anonymous";
-
-                imgElement.onload = function() {
-                    if (localLoadId !== relevantGlobalLoadIdGetter()) {
-                         console.log(`OLD ${overlayType.toUpperCase()} HAND ONLOAD EVENT IGNORED (CAPTURED ID: ${localLoadId}, CURRENT ID: ${relevantGlobalLoadIdGetter()}).`);
-                        return;
-                    }
+                imgElement.onload = () => {
+                    if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
                     imgElement.style.display = 'block';
-                    errorElement.style.display = 'none';
+                    if(errorElement) errorElement.style.display = 'none';
+                    if (overlayType === 'smile') updateFacialFeatureOverlays(metadata);
                 }
-                imgElement.onerror = function() {
-                    if (localLoadId !== relevantGlobalLoadIdGetter()) {
-                        console.log(`OLD ${overlayType.toUpperCase()} HAND ONERROR EVENT IGNORED (CAPTURED ID: ${localLoadId}, CURRENT ID: ${relevantGlobalLoadIdGetter()}).`);
-                        return;
+                imgElement.onerror = () => {
+                    if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
+                    clearImage(imgElement);
+                    if (errorElement) {
+                        errorElement.textContent = `${errorMessagePrefix} VARIANT FOR ${baseAssetType.toUpperCase()} "${attributeValue.toUpperCase()}" ASSET NOT FOUND.`;
+                        errorElement.style.display = 'block';
                     }
-                    imgElement.style.display = 'none';
-                    console.error(`${errorMessagePrefix} VARIANT FOR SKIN "${skinValue.toUpperCase()}" NOT FOUND. URL: ${imageUrl}. TRIGGERING RESET.`);
-                    resetSearch();
+                    console.warn(`${errorMessagePrefix} VARIANT FOR ${baseAssetType.toUpperCase()} "${attributeValue.toUpperCase()}" NOT FOUND. URL: ${imageUrl}.`);
+                    if (overlayType === 'smile') updateFacialFeatureOverlays(null);
                 }
                 imgElement.src = imageUrl;
             } else {
-                imgElement.style.display = 'none';
-                console.warn(`"SKIN" ATTRIBUTE NOT FOUND FOR THIS NFT TO APPLY ${errorMessagePrefix}.`);
+                clearImage(imgElement);
+                console.warn(`"${baseAssetType.toUpperCase()}" ATTRIBUTE NOT FOUND FOR ${errorMessagePrefix}.`);
+                if (overlayType === 'smile') updateFacialFeatureOverlays(null);
             }
         }
 
-        // --- Core Logic ---
         async function fetchDeGod() {
-            const idValueTrimmed = deGodIdInput.value.trim();
+            const idValueTrimmed = dom.deGodIdInput.value.trim();
 
-            if (currentFetchController) {
-                currentFetchController.abort();
-            }
-            currentFetchController = new AbortController();
-            const { signal } = currentFetchController;
-
-            const localNftImageLoadId = ++currentNftImageLoadId;
-            currentLeftHandLoadId++;
-            currentRightHandLoadId++;
+            if (appState.currentFetchController) appState.currentFetchController.abort();
+            appState.currentFetchController = new AbortController();
+            const { signal } = appState.currentFetchController;
+            const localNftImageLoadId = ++appState.loadCounters.nft;
 
             if (!idValueTrimmed) {
-                clearFetchedDataUI(true);
-                errorDiv.textContent = 'PLEASE ENTER A DEGOD ID.';
-                loadingDiv.style.display = 'none';
-                if (currentFetchController.signal === signal) currentFetchController = null;
+                clearFetchedDataUI(true); dom.errorDiv.textContent = 'PLEASE ENTER A DEGOD ID.';
+                dom.loadingDiv.style.display = 'none';
+                if (appState.currentFetchController?.signal === signal) appState.currentFetchController = null;
                 return;
             }
 
             clearFetchedDataUI(false);
-            loadingDiv.style.display = 'block';
-
+            dom.loadingDiv.style.display = 'block';
             const id = parseInt(idValueTrimmed);
 
             if (isNaN(id) || id < 1 || id > 10000) {
-                errorDiv.textContent = 'PLEASE ENTER A VALID ID (BETWEEN 1 AND 10000).';
-                loadingDiv.style.display = 'none';
-                clearFetchedDataUI(true);
-                if (currentFetchController.signal === signal) currentFetchController = null;
+                dom.errorDiv.textContent = 'PLEASE ENTER A VALID ID (BETWEEN 1 AND 10000).';
+                dom.loadingDiv.style.display = 'none'; clearFetchedDataUI(true);
+                if (appState.currentFetchController?.signal === signal) appState.currentFetchController = null;
                 return;
             }
 
-            const metadataIndex = id - 1;
-            const metadataUrl = `${atob(_B64_METADATA_BASE)}${metadataIndex}.json`; // Decode Base64 URL
+            const metadataUrl = `${DECODED_URLS.METADATA_BASE}${id - 1}.json`;
 
             try {
                 const response = await fetch(metadataUrl, { signal });
-                if (!response.ok) {
-                     throw new Error(`FAILED TO FETCH DATA. STATUS: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`FAILED TO FETCH DATA. STATUS: ${response.status}`);
                 const metadata = await response.json();
-                lastFetchedMetadata = metadata;
+                appState.lastFetchedMetadata = metadata;
 
-                if (metadata && metadata.image) {
-                    nftImage.onload = null;
-                    nftImage.onerror = null;
-                    nftImage.crossOrigin = "Anonymous";
+                if (signal.aborted) {
+                    if (localNftImageLoadId === appState.loadCounters.nft && !dom.deGodIdInput.value.trim()) clearFetchedDataUI(true);
+                    dom.loadingDiv.style.display = 'none'; return;
+                }
 
-                    nftImage.onload = () => {
-                        if (localNftImageLoadId !== currentNftImageLoadId) {
-                            console.log("OLD NFT IMAGE ONLOAD EVENT IGNORED.");
-                            return;
-                        }
-                        loadingDiv.style.display = 'none';
-                        imageStackContainer.style.display = 'block';
-                        nftImage.alt = `DeGod NFT #${id}`;
-                        downloadBtn.style.display = 'block';
-                        if (handOptionsVisible) {
-                            updateOverlayVisibility('left');
-                            updateOverlayVisibility('right');
+                if (metadata?.image) {
+                    dom.nftImage.crossOrigin = "Anonymous";
+                    dom.nftImage.onload = null; dom.nftImage.onerror = null;
+
+                    dom.nftImage.onload = () => {
+                        if (localNftImageLoadId !== appState.loadCounters.nft || signal.aborted) return;
+                        dom.loadingDiv.style.display = 'none';
+                        dom.imageStackContainer.style.display = 'block';
+                        dom.nftImage.style.display = 'block';
+                        dom.nftImage.alt = `DeGod NFT #${id}`;
+                        dom.downloadBtn.style.display = 'block';
+
+                        updateFacialFeatureOverlays(metadata);
+
+                        if (appState.showSmile) updateOverlayVisibility('smile');
+                        if (appState.handOptionsVisible) {
+                           if (appState.showLeftHand) updateOverlayVisibility('left');
+                           if (appState.showRightHand) updateOverlayVisibility('right');
                         }
                     }
-                    nftImage.onerror = () => {
-                        if (localNftImageLoadId !== currentNftImageLoadId) {
-                            console.log("OLD NFT IMAGE ONERROR EVENT IGNORED.");
-                            return;
-                        }
-                        loadingDiv.style.display = 'none';
-                        errorDiv.textContent = 'FAILED TO LOAD MAIN NFT IMAGE.';
+                    dom.nftImage.onerror = () => {
+                        if (localNftImageLoadId !== appState.loadCounters.nft || signal.aborted) return;
+                        dom.loadingDiv.style.display = 'none'; dom.errorDiv.textContent = 'FAILED TO LOAD MAIN NFT IMAGE.';
                         clearFetchedDataUI(true);
                     }
-                    nftImage.src = metadata.image; // This URL comes from the API, so it's dynamic
-
-                } else {
-                    throw new Error('INVALID METADATA FORMAT OR "IMAGE" FIELD NOT FOUND.');
-                }
-
+                    dom.nftImage.src = metadata.image;
+                } else { throw new Error('INVALID METADATA FORMAT OR "IMAGE" FIELD NOT FOUND.'); }
             } catch (err) {
                 if (err.name === 'AbortError') {
-                    console.log(`FETCH FOR DEGOD ID ${idValueTrimmed} WAS ABORTED.`);
-                    if (localNftImageLoadId === currentNftImageLoadId) {
-                        loadingDiv.style.display = 'none';
-                        if (!deGodIdInput.value.trim()) clearFetchedDataUI(true);
-                    }
+                    if (localNftImageLoadId === appState.loadCounters.nft && !dom.deGodIdInput.value.trim()) clearFetchedDataUI(true);
                 } else {
                     console.error("ERROR FETCHING DEGOD:", err);
-                    errorDiv.textContent = `AN ERROR OCCURRED: ${err.message.toUpperCase()}`;
+                    dom.errorDiv.textContent = `AN ERROR OCCURRED: ${err.message.toUpperCase()}`;
                     clearFetchedDataUI(true);
-                    loadingDiv.style.display = 'none';
                 }
+                dom.loadingDiv.style.display = 'none';
             } finally {
-                if (currentFetchController && currentFetchController.signal === signal) {
-                    currentFetchController = null;
-                }
+                if (appState.currentFetchController?.signal === signal) appState.currentFetchController = null;
             }
         }
 
         async function handleDownload() {
-            if (!lastFetchedMetadata || !nftImage.src || nftImage.src === PREVIEW_IMAGE_URL || imageStackContainer.style.display === 'none' || !nftImage.complete || nftImage.naturalWidth === 0) {
-                alert("ACTUAL NFT IMAGE NOT FULLY LOADED OR UNAVAILABLE FOR DOWNLOAD.");
-                return;
+            if (!appState.lastFetchedMetadata || !dom.nftImage.src || dom.nftImage.src === DECODED_URLS.PREVIEW_IMG || dom.imageStackContainer.style.display === 'none' || !dom.nftImage.complete || dom.nftImage.naturalWidth === 0) {
+                alert("ACTUAL NFT IMAGE NOT FULLY LOADED OR UNAVAILABLE FOR DOWNLOAD."); return;
             }
 
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const TARGET_WIDTH = 1000;
-            const TARGET_HEIGHT = 1000;
-            canvas.width = TARGET_WIDTH;
-            canvas.height = TARGET_HEIGHT;
-
-            const idForFilename = deGodIdInput.value || 'NFT';
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+            const TARGET_WIDTH = 1000; const TARGET_HEIGHT = 1000;
+            canvas.width = TARGET_WIDTH; canvas.height = TARGET_HEIGHT;
+            const idForFilename = dom.deGodIdInput.value || 'NFT';
 
             const drawImageToCanvas = (imgElement) => {
-                return new Promise((resolve) => {
-                    if (imgElement.complete && imgElement.naturalWidth !== 0 && imgElement.style.display !== 'none') {
-                        const hRatio = TARGET_WIDTH / imgElement.naturalWidth;
-                        const vRatio = TARGET_HEIGHT / imgElement.naturalHeight;
-                        const ratio = Math.min(hRatio, vRatio);
-                        const scaledWidth = imgElement.naturalWidth * ratio;
-                        const scaledHeight = imgElement.naturalHeight * ratio;
-                        const offsetX = (TARGET_WIDTH - scaledWidth) / 2;
-                        const offsetY = (TARGET_HEIGHT - scaledHeight) / 2;
-                        ctx.drawImage(imgElement, offsetX, offsetY, scaledWidth, scaledHeight);
-                        resolve();
-                    } else if (imgElement.src && imgElement.style.display !== 'none') {
-                        const tempImg = new Image();
-                        tempImg.crossOrigin = "Anonymous";
+                return new Promise((resolve, reject) => {
+                    if (!imgElement || imgElement.style.display === 'none' || !imgElement.src) { resolve(); return; }
+                    if (imgElement.complete && imgElement.naturalWidth !== 0) {
+                        try {
+                            ctx.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+                            resolve();
+                        } catch (e) { console.error(`Error drawing ${imgElement.alt}:`, e); reject(e); }
+                    } else {
+                        const tempImg = new Image(); tempImg.crossOrigin = "Anonymous";
                         tempImg.onload = () => {
-                           const hRatio = TARGET_WIDTH / tempImg.naturalWidth;
-                           const vRatio = TARGET_HEIGHT / tempImg.naturalHeight;
-                           const ratio = Math.min(hRatio, vRatio);
-                           const scaledWidth = tempImg.naturalWidth * ratio;
-                           const scaledHeight = tempImg.naturalHeight * ratio;
-                           const offsetX = (TARGET_WIDTH - scaledWidth) / 2;
-                           const offsetY = (TARGET_HEIGHT - scaledHeight) / 2;
-                           ctx.drawImage(tempImg, offsetX, offsetY, scaledWidth, scaledHeight);
-                           resolve();
+                           try {
+                                ctx.drawImage(tempImg, 0, 0, tempImg.naturalWidth, tempImg.naturalHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+                                resolve();
+                           } catch (e) { console.error(`Error drawing loaded temp ${imgElement.alt}:`, e); reject(e); }
                         };
                         tempImg.onerror = () => {
-                            console.warn(`FAILED TO LOAD OVERLAY ${imgElement.alt.toUpperCase()} FOR DOWNLOAD DURING CANVAS DRAW. SKIPPING.`);
+                            console.warn(`FAILED TO LOAD ${imgElement.alt.toUpperCase()} FOR DOWNLOAD. SKIPPING.`);
                             resolve();
                         };
                         tempImg.src = imgElement.src;
-                    } else {
-                        resolve();
                     }
                 });
             };
 
             let filenameParts = [`DEGOD_${idForFilename}`];
-
             try {
-                await drawImageToCanvas(nftImage);
+                const imagesInDrawOrder = [
+                    dom.nftImage,
+                    dom.backgroundPatchImage,
+                    dom.specialtyPatchImage,      // Wings
+                    dom.neckMythicMambaOverlayImage,
+                    dom.smileOverlayImage,
+                    dom.eyesOverlayImage,
+                    dom.specialtyForeheadOverlayImage,
+                    dom.mouthFeatureOverlayImage,
+                    dom.leftHandImage,
+                    dom.rightHandImage
+                ];
 
-                if (showLeftHand && handOptionsVisible) {
-                    await drawImageToCanvas(leftHandImage);
-                    if (leftHandImage.style.display !== 'none' && leftHandImage.src) {
-                        filenameParts.push("LEFTHAND");
+                for (const img of imagesInDrawOrder) {
+                     await drawImageToCanvas(img);
+                }
+
+                if (appState.showSmile && dom.smileOverlayImage.style.display !== 'none') filenameParts.push("SMILE");
+                if (dom.neckMythicMambaOverlayImage.style.display !== 'none') filenameParts.push("MAMBA_NECK");
+                if (dom.specialtyForeheadOverlayImage.style.display !== 'none') {
+                    const specialtyAttr = appState.lastFetchedMetadata.attributes.find(attr => attr.trait_type.toLowerCase() === "specialty" && SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(attr.value));
+                    if (specialtyAttr) {
+                        filenameParts.push(specialtyAttr.value.replace(/\s+/g, '_').toUpperCase());
                     }
                 }
-                if (showRightHand && handOptionsVisible) {
-                    await drawImageToCanvas(rightHandImage);
-                    if (rightHandImage.style.display !== 'none' && rightHandImage.src) {
-                         filenameParts.push("RIGHTHAND");
-                    }
-                }
+
 
                 filenameParts.push(`${TARGET_WIDTH}X${TARGET_HEIGHT}.PNG`);
                 const finalFilename = filenameParts.join('_').replace(/__+/g, '_');
-
                 triggerCanvasDownload(canvas, finalFilename);
 
             } catch (e) {
                 console.error("ERROR DURING IMAGE COMPOSITING FOR DOWNLOAD:", e);
-                alert("AN ERROR OCCURRED WHILE PREPARING THE IMAGE FOR DOWNLOAD.");
+                alert("AN ERROR OCCURRED PREPARING IMAGE. CHECK CONSOLE.");
             }
         }
 
@@ -694,14 +744,11 @@
             try {
                 const dataURL = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
-                link.href = dataURL;
-                link.download = filename;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                link.href = dataURL; link.download = filename;
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
             } catch (e) {
                 console.error("ERROR CREATING DATA URL OR DOWNLOADING:", e);
-                alert("FAILED TO CREATE IMAGE FOR DOWNLOAD. POSSIBLE CORS ISSUE.");
+                alert("FAILED TO CREATE IMAGE FOR DOWNLOAD. POSSIBLE CORS ISSUE OR CANVAS TAINTED.");
             }
         }
     </script>
