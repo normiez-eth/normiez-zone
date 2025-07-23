@@ -47,7 +47,7 @@
             position: absolute;
             display: block;
             border-radius: 50%;
-            z-index: 10; /* Should be less than any interactive elements on top if overlap occurs */
+            z-index: 10;
         }
         #headerLinkTwitter { top: 65%; left: 9%; width: 10%; height: 18%; }
         #headerLinkDegods { top: 65%; left: 26%; width: 10%; height: 18%; }
@@ -89,6 +89,11 @@
         button:active, .action-button:active {
             transform: translateY(1px);
         }
+        button:disabled, .action-button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
 
         #searchBtn, #toggleHandOptionsBtn, #downloadBtn, #toggleGmOptionsBtn {
             background-color: #0D98BA;
@@ -102,7 +107,7 @@
         .overlay-toggle-controls {
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Align items to the top for consistent layout with sub-menus */
+            align-items: flex-start;
             gap: 10px;
             margin-bottom: 15px;
             flex-wrap: wrap;
@@ -114,7 +119,7 @@
         .toggle-group {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centers the main toggle button and its sub-menu container */
+            align-items: center;
         }
 
         .toggle-button.off { background-color: #f0ad4e; }
@@ -126,16 +131,41 @@
 
 
         .hand-controls-container, .gm-controls-container {
-            /* display: flex; is controlled by JS */
-            flex-direction: column; /* Stack sub-buttons vertically */
+            flex-direction: column;
             align-items: center;
-            gap: 5px; /* Space between sub-buttons */
-            margin-top: 5px; /* Space between main toggle and sub-menu */
-            margin-bottom: 10px; /* Space below the sub-menu group */
-            /* width: auto; Implicitly, no longer 100% */
+            gap: 5px;
+            margin-top: 5px;
+            margin-bottom: 10px;
         }
         .hand-toggle-button, .gm-toggle-button {
             padding: 8px 12px; font-size: 0.9em; width: 120px;
+        }
+
+        .mug-control-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .mug-arrow-btn {
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            line-height: 28px;
+            padding: 0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .mug-arrow-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .mug-arrow-btn:active {
+            transform: translateY(1px);
         }
 
         #result { margin-top: 10px; }
@@ -163,17 +193,19 @@
         /* Z-INDEX - Beercoin is highest */
         #nftImage { z-index: 1; }
         #backgroundPatchImage { z-index: 2; }
-        #specialtyPatchImage { z-index: 3; } /* Wings */
+        #specialtyPatchImage { z-index: 3; }
         #neckMythicMambaOverlayImage { z-index: 4; }
         #smileOverlayImage { z-index: 5; }
         #eyesOverlayImage { z-index: 6; }
-        #specialtyForeheadOverlayImage { z-index: 7; } /* Forehead Diamond/Third Eye */
+        #specialtyForeheadOverlayImage { z-index: 7; }
         #mouthFeatureOverlayImage { z-index: 8; }
         #leftHandImage { z-index: 9; }
         #rightHandImage { z-index: 10; }
-        #beerOverlayImage { z-index: 11; }       /* Skin-dependent Beer */
-        #beercoinOverlayImage { z-index: 12; }   /* Beercoin Sticker - on top */
-
+        #beerOverlayImage { z-index: 11; }
+        #mugOverlayImage { z-index: 12; }
+        #carouselMugOverlayImage { z-index: 13; }
+        #carouselGmOverlayImage { z-index: 14; }
+        #beercoinOverlayImage { z-index: 15; }
 
         .error-message {
             color: #ffff00;
@@ -220,6 +252,18 @@
             <div id="gmControlsContainer" class="gm-controls-container" style="display: none;">
                 <button id="beerBtn" class="gm-toggle-button toggle-button off">BEER</button>
                 <button id="beercoinBtn" class="gm-toggle-button toggle-button off">BEERCOIN</button>
+                <!-- Mug Carousel Controls -->
+                <div class="mug-control-wrapper">
+                    <button id="mugPrevBtn" class="mug-arrow-btn" style="display: none;">◀</button>
+                    <button id="mugBtn" class="gm-toggle-button toggle-button off">MUG</button>
+                    <button id="mugNextBtn" class="mug-arrow-btn" style="display: none;">▶</button>
+                </div>
+                <!-- GM Color Carousel Controls -->
+                <div class="mug-control-wrapper">
+                    <button id="gmPrevBtn" class="mug-arrow-btn" style="display: none;">◀</button>
+                    <button id="gmColorBtn" class="gm-toggle-button toggle-button off" disabled>GM COLOR</button>
+                    <button id="gmNextBtn" class="mug-arrow-btn" style="display: none;">▶</button>
+                </div>
             </div>
         </div>
     </div>
@@ -240,6 +284,9 @@
             <img id="leftHandImage" src="" alt="Left Hand Overlay" style="display:none;">
             <img id="rightHandImage" src="" alt="Right Hand Overlay" style="display:none;">
             <img id="beerOverlayImage" src="" alt="Beer Overlay" style="display:none;">
+            <img id="mugOverlayImage" src="" alt="Mug Overlay (Skin)" style="display:none;">
+            <img id="carouselMugOverlayImage" src="" alt="Mug Overlay (Carousel)" style="display:none;">
+            <img id="carouselGmOverlayImage" src="" alt="GM Color Overlay" style="display:none;">
             <img id="beercoinOverlayImage" src="" alt="Beercoin Overlay" style="display:none;">
         </div>
         <p id="smileError" class="error-message" style="display:none;"></p>
@@ -247,6 +294,7 @@
         <p id="mouthFeatureError" class="error-message" style="display:none;"></p>
         <p id="leftHandError" class="error-message" style="display:none;"></p>
         <p id="rightHandError" class="error-message" style="display:none;"></p>
+        <p id="mugError" class="error-message" style="display:none;"></p>
         <button id="downloadBtn" class="action-button" style="display:none;">DOWNLOAD IMAGE</button>
     </div>
 </div>
@@ -267,9 +315,48 @@
         NECK_MYTHIC_MAMBA_OVERLAY: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL1NwZWNpYWx0eS1wYXRjaC1zMi9NeXRoaWMlMjBNYW1iYS5wbmc=",
         SPECIALTY_FOREHEAD_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL3NwZWNpYWx0eS1zMi8=",
         BEERCOIN_IMG: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL1N0aWNrZXIvYmVlcmNvaW4ucG5n",
-        BEER_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLWJlZXIv"
+        BEER_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLWJlZXIv",
+        MUG_BASE: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL0dtLW11Z3Mtc2tpbnMv"
     };
     const DECODED_URLS = Object.fromEntries(Object.entries(B64_URLS).map(([key, value]) => [key, atob(value)]));
+
+    const B64_CAROUSEL_MUGS = [
+        { name: "VIKING_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvdmlraW5nJTIwbXVnLnBuZw==" },
+        { name: "ROCK_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3Mvcm9jayUyMG11Zy5wbmc=" },
+        { name: "PENGU_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvcGVuZ3UlMjBtdWcucG5n" },
+        { name: "LAVA_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvbGF2YSUyMG11Zy5wbmc=" },
+        { name: "CLAMP_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvY2xhbXAlMjBtdWcucG5n" },
+        { name: "GREEK_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvR3JlZWslMjBtdWcucG5n" },
+        { name: "WHITE_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL3doaXRlJTIwbXVnLnBuZw==" },
+        { name: "BLACK_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2JsYWNrJTIwbXVnLnBuZw==" },
+        { name: "RED_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL3JlZCUyMG11Zy5wbmc=" },
+        { name: "GREEN_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2dyZWVuJTIwbXVnLnBuZw==" },
+        { name: "GOLD_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2dvbGQlMjBtdWcucG5n" },
+        { name: "BLUE_MUG", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2JsdWUlMjBtdWcucG5n" }
+    ];
+
+    const B64_ALLOWED_GM_MUG_URLS = [
+        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL3doaXRlJTIwbXVnLnBuZw==",
+        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2JsYWNrJTIwbXVnLnBuZw==",
+        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL3JlZCUyMG11Zy5wbmc=",
+        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2dyZWVuJTIwbXVnLnBuZw==",
+        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2dvbGQlMjBtdWcucG5n",
+        "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9nbS1tdWdzL2JsdWUlMjBtdWcucG5n"
+    ];
+
+    const B64_CAROUSEL_GMS = [
+        { name: "GM_WHITE", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3Mvd2hpdGUlMjBnbS5wbmc=" },
+        { name: "GM_BLACK", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvYmxhY2slMjBnbS5wbmc=" },
+        { name: "GM_RED", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvcmVkJTIwZ20ucG5n" },
+        { name: "GM_GREEN", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvZ3JlZW4lMjBnbS5wbmc=" },
+        { name: "GM_GOLD", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvZ29sZCUyMGdtLnBuZw==" },
+        { name: "GM_BLUE", urlB64: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3ppbzA2L2RlZ29kcy9yZWZzL2hlYWRzL2dtLW11Z3MvYmx1ZSUyMGdtLnBuZw==" }
+    ];
+
+    // --- Decode at runtime ---
+    const CAROUSEL_MUGS = B64_CAROUSEL_MUGS.map(item => ({ name: item.name, url: atob(item.urlB64) }));
+    const CAROUSEL_GMS = B64_CAROUSEL_GMS.map(item => ({ name: item.name, url: atob(item.urlB64) }));
+    const ALLOWED_GM_MUG_URLS = B64_ALLOWED_GM_MUG_URLS.map(urlB64 => atob(urlB64));
 
     const TRIGGER_MOUTH_TRAIT_VALUES = ["Clown Nose", "Goatee", "Hipster Beard", "Porn Stashe", "Santa Beard"];
     const PREVIEW_IMAGE_ALT = "PREVIEW IMAGE";
@@ -285,11 +372,15 @@
         gmOptionsVisible: false,
         showBeercoin: false,
         showBeer: false,
+        showMug: false,
+        carouselMugIndex: -1,
+        showGmColor: false,
+        carouselGmIndex: -1,
         lastFetchedMetadata: null,
         currentMouthTraitValue: null,
         currentEyesTraitValue: null,
         currentFetchController: null,
-        loadCounters: { nft: 0, leftHand: 0, rightHand: 0, smile: 0, eyes: 0, mouthFeature: 0, backgroundPatch: 0, specialtyPatch: 0, neckMythicMambaOverlay: 0, specialtyForeheadOverlay: 0, beercoin: 0, beer: 0 }
+        loadCounters: { nft: 0, leftHand: 0, rightHand: 0, smile: 0, eyes: 0, mouthFeature: 0, backgroundPatch: 0, specialtyPatch: 0, neckMythicMambaOverlay: 0, specialtyForeheadOverlay: 0, beercoin: 0, beer: 0, mug: 0, carouselMug: 0, carouselGm: 0 }
     };
 
     const dom = {
@@ -305,6 +396,12 @@
         gmControlsContainer: document.getElementById('gmControlsContainer'),
         beercoinBtn: document.getElementById('beercoinBtn'),
         beerBtn: document.getElementById('beerBtn'),
+        mugBtn: document.getElementById('mugBtn'),
+        mugPrevBtn: document.getElementById('mugPrevBtn'),
+        mugNextBtn: document.getElementById('mugNextBtn'),
+        gmColorBtn: document.getElementById('gmColorBtn'),
+        gmPrevBtn: document.getElementById('gmPrevBtn'),
+        gmNextBtn: document.getElementById('gmNextBtn'),
         imageStackContainer: document.getElementById('imageStackContainer'),
         nftImage: document.getElementById('nftImage'),
         smileOverlayImage: document.getElementById('smileOverlayImage'),
@@ -318,12 +415,16 @@
         specialtyForeheadOverlayImage: document.getElementById('specialtyForeheadOverlayImage'),
         beercoinOverlayImage: document.getElementById('beercoinOverlayImage'),
         beerOverlayImage: document.getElementById('beerOverlayImage'),
+        mugOverlayImage: document.getElementById('mugOverlayImage'),
+        carouselMugOverlayImage: document.getElementById('carouselMugOverlayImage'),
+        carouselGmOverlayImage: document.getElementById('carouselGmOverlayImage'),
         errorDiv: document.getElementById('error'),
         smileError: document.getElementById('smileError'),
         eyesError: document.getElementById('eyesError'),
         mouthFeatureError: document.getElementById('mouthFeatureError'),
         leftHandError: document.getElementById('leftHandError'),
         rightHandError: document.getElementById('rightHandError'),
+        mugError: document.getElementById('mugError'),
         loadingDiv: document.getElementById('loading'),
         downloadBtn: document.getElementById('downloadBtn'),
         headerImageElem: document.getElementById('headerImage')
@@ -337,7 +438,6 @@
     dom.resetAppBtn.addEventListener('click', resetSearch);
     dom.deGodIdInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); fetchDeGod(); } });
     dom.downloadBtn.addEventListener('click', handleDownload);
-
     dom.toggleSmileBtn.addEventListener('click', () => {
         appState.showSmile = !appState.showSmile;
         updateToggleButton(dom.toggleSmileBtn, appState.showSmile);
@@ -357,9 +457,6 @@
                     updateOverlayVisibility(hand);
                 }
             });
-        } else {
-            if (appState.showLeftHand) updateOverlayVisibility('left');
-            if (appState.showRightHand) updateOverlayVisibility('right');
         }
     });
 
@@ -368,7 +465,6 @@
         updateToggleButton(dom.leftHandBtn, appState.showLeftHand);
         updateOverlayVisibility('left');
     });
-
     dom.rightHandBtn.addEventListener('click', () => {
         appState.showRightHand = !appState.showRightHand;
         updateToggleButton(dom.rightHandBtn, appState.showRightHand);
@@ -379,19 +475,26 @@
         appState.gmOptionsVisible = !appState.gmOptionsVisible;
         dom.gmControlsContainer.style.display = appState.gmOptionsVisible ? 'flex' : 'none';
         if (!appState.gmOptionsVisible) {
-            if (appState.showBeercoin) {
-                appState.showBeercoin = false;
-                updateToggleButton(dom.beercoinBtn, false);
-                updateOverlayVisibility('beercoin');
-            }
-            if (appState.showBeer) {
-                appState.showBeer = false;
-                updateToggleButton(dom.beerBtn, false);
-                updateOverlayVisibility('beer');
-            }
-        } else {
-            if (appState.showBeercoin) updateOverlayVisibility('beercoin');
-            if (appState.showBeer) updateOverlayVisibility('beer');
+            // Deactivate all GM options when hiding the menu
+            ['beer', 'beercoin', 'mug', 'gmColor'].forEach(type => {
+                const stateKey = `show${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                if (appState[stateKey]) {
+                    appState[stateKey] = false;
+                    updateToggleButton(dom[`${type}Btn`], false);
+                    if (type === 'mug') {
+                         dom.mugPrevBtn.style.display = 'none';
+                         dom.mugNextBtn.style.display = 'none';
+                         updateCarouselMug();
+                         updateGmColorAvailability(); // Check GM button status
+                    } else if (type === 'gmColor') {
+                         dom.gmPrevBtn.style.display = 'none';
+                         dom.gmNextBtn.style.display = 'none';
+                         updateCarouselGm();
+                    } else {
+                        updateOverlayVisibility(type);
+                    }
+                }
+            });
         }
     });
 
@@ -400,18 +503,78 @@
         updateToggleButton(dom.beercoinBtn, appState.showBeercoin);
         updateOverlayVisibility('beercoin');
     });
-
     dom.beerBtn.addEventListener('click', () => {
         appState.showBeer = !appState.showBeer;
         updateToggleButton(dom.beerBtn, appState.showBeer);
         updateOverlayVisibility('beer');
     });
 
+    // MUG BUTTON LOGIC
+    dom.mugBtn.addEventListener('click', () => {
+        appState.showMug = !appState.showMug;
+        updateToggleButton(dom.mugBtn, appState.showMug);
+        const arrowDisplay = appState.showMug ? 'block' : 'none';
+        dom.mugPrevBtn.style.display = arrowDisplay;
+        dom.mugNextBtn.style.display = arrowDisplay;
+        appState.carouselMugIndex = appState.showMug ? 0 : -1;
+        updateOverlayVisibility('mug');
+        updateGmColorAvailability();
+    });
+    dom.mugPrevBtn.addEventListener('click', () => {
+        appState.carouselMugIndex = (appState.carouselMugIndex > 0) ? appState.carouselMugIndex - 1 : CAROUSEL_MUGS.length - 1;
+        updateCarouselMug();
+        updateGmColorAvailability();
+    });
+    dom.mugNextBtn.addEventListener('click', () => {
+        appState.carouselMugIndex = (appState.carouselMugIndex < CAROUSEL_MUGS.length - 1) ? appState.carouselMugIndex + 1 : 0;
+        updateCarouselMug();
+        updateGmColorAvailability();
+    });
+
+    // GM COLOR BUTTON LOGIC
+    dom.gmColorBtn.addEventListener('click', () => {
+        if (dom.gmColorBtn.disabled) return;
+        appState.showGmColor = !appState.showGmColor;
+        updateToggleButton(dom.gmColorBtn, appState.showGmColor);
+        const arrowDisplay = appState.showGmColor ? 'block' : 'none';
+        dom.gmPrevBtn.style.display = arrowDisplay;
+        dom.gmNextBtn.style.display = arrowDisplay;
+        appState.carouselGmIndex = appState.showGmColor ? 0 : -1;
+        updateCarouselGm();
+    });
+    dom.gmPrevBtn.addEventListener('click', () => {
+        appState.carouselGmIndex = (appState.carouselGmIndex > 0) ? appState.carouselGmIndex - 1 : CAROUSEL_GMS.length - 1;
+        updateCarouselGm();
+    });
+    dom.gmNextBtn.addEventListener('click', () => {
+        appState.carouselGmIndex = (appState.carouselGmIndex < CAROUSEL_GMS.length - 1) ? appState.carouselGmIndex + 1 : 0;
+        updateCarouselGm();
+    });
+    
+    function updateGmColorAvailability() {
+        let isAllowed = false;
+        if (appState.showMug && appState.carouselMugIndex > -1) {
+            const currentMugUrl = CAROUSEL_MUGS[appState.carouselMugIndex].url;
+            isAllowed = ALLOWED_GM_MUG_URLS.includes(currentMugUrl);
+        }
+
+        dom.gmColorBtn.disabled = !isAllowed;
+
+        if (!isAllowed && appState.showGmColor) {
+            appState.showGmColor = false;
+            updateToggleButton(dom.gmColorBtn, false);
+            dom.gmPrevBtn.style.display = 'none';
+            dom.gmNextBtn.style.display = 'none';
+            appState.carouselGmIndex = -1;
+            updateCarouselGm();
+        }
+    }
+
+
     function updateToggleButton(button, isActive) {
         button.classList.toggle('on', isActive);
         button.classList.toggle('off', !isActive);
     }
-
     function clearImage(imgElement, errorElement = null) {
         if (!imgElement) return;
         imgElement.onload = null; imgElement.onerror = null;
@@ -420,7 +583,6 @@
             errorElement.textContent = ''; errorElement.style.display = 'none';
         }
     }
-
     function clearAllOverlays() {
         [
             {img: dom.smileOverlayImage, err: dom.smileError},
@@ -432,7 +594,10 @@
             {img: dom.specialtyPatchImage },
             {img: dom.neckMythicMambaOverlayImage },
             {img: dom.specialtyForeheadOverlayImage },
-            {img: dom.beerOverlayImage },      // Swapped order for clarity, beercoin cleared last
+            {img: dom.beerOverlayImage },
+            {img: dom.mugOverlayImage, err: dom.mugError },
+            {img: dom.carouselMugOverlayImage },
+            {img: dom.carouselGmOverlayImage },
             {img: dom.beercoinOverlayImage }
         ].forEach(item => clearImage(item.img, item.err));
     }
@@ -448,7 +613,6 @@
             clearImage(dom.nftImage);
         }
         clearAllOverlays();
-
         dom.downloadBtn.style.display = 'none';
         dom.errorDiv.textContent = '';
         dom.loadingDiv.style.display = 'none';
@@ -458,177 +622,118 @@
     }
 
     function resetSearch() {
-        if (appState.currentFetchController) { appState.currentFetchController.abort(); appState.currentFetchController = null; }
+        if (appState.currentFetchController) { appState.currentFetchController.abort(); }
         Object.keys(appState.loadCounters).forEach(key => appState.loadCounters[key]++);
-
         dom.deGodIdInput.value = '';
         clearFetchedDataUI(true);
-
-        appState.showSmile = false;
-        dom.toggleSmileBtn.classList.remove('on', 'off');
-
-        appState.handOptionsVisible = false;
-        dom.handControlsContainer.style.display = 'none';
+        appState.showSmile = false; dom.toggleSmileBtn.classList.remove('on', 'off');
+        appState.handOptionsVisible = false; dom.handControlsContainer.style.display = 'none';
         appState.showLeftHand = false; updateToggleButton(dom.leftHandBtn, false);
         appState.showRightHand = false; updateToggleButton(dom.rightHandBtn, false);
-
-        appState.gmOptionsVisible = false;
-        dom.gmControlsContainer.style.display = 'none';
+        appState.gmOptionsVisible = false; dom.gmControlsContainer.style.display = 'none';
         appState.showBeercoin = false; updateToggleButton(dom.beercoinBtn, false);
         appState.showBeer = false; updateToggleButton(dom.beerBtn, false);
-
+        appState.showMug = false; updateToggleButton(dom.mugBtn, false);
+        appState.carouselMugIndex = -1;
+        dom.mugPrevBtn.style.display = 'none'; dom.mugNextBtn.style.display = 'none';
+        appState.showGmColor = false; updateToggleButton(dom.gmColorBtn, false);
+        appState.carouselGmIndex = -1;
+        dom.gmPrevBtn.style.display = 'none'; dom.gmNextBtn.style.display = 'none';
+        updateGmColorAvailability();
         if (document.activeElement !== dom.deGodIdInput) dom.deGodIdInput.focus();
     }
 
     function updateOverlayVisibility(overlayType) {
-        let shouldShow = false;
-        let isHandOverlay = false;
-        let isGmOverlay = false;
-
-        if (overlayType === 'smile') shouldShow = appState.showSmile;
-        else if (overlayType === 'left') { shouldShow = appState.showLeftHand; isHandOverlay = true; }
-        else if (overlayType === 'right') { shouldShow = appState.showRightHand; isHandOverlay = true; }
-        else if (overlayType === 'beercoin') { shouldShow = appState.showBeercoin; isGmOverlay = true; }
-        else if (overlayType === 'beer') { shouldShow = appState.showBeer; isGmOverlay = true; }
-
-
         const canDisplay = appState.lastFetchedMetadata && dom.imageStackContainer.style.display !== 'none';
-        let displayConditionsMet = shouldShow && canDisplay;
+        let isVisible = false;
 
-        if (isHandOverlay) {
-            displayConditionsMet = displayConditionsMet && appState.handOptionsVisible;
-        } else if (isGmOverlay) {
-            displayConditionsMet = displayConditionsMet && appState.gmOptionsVisible;
-        }
-
-        if (overlayType === 'smile' || isHandOverlay || isGmOverlay) {
-            displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, displayConditionsMet);
-        }
-    }
-
-    function updateFacialFeatureOverlays(metadata) {
-        clearImage(dom.mouthFeatureOverlayImage, dom.mouthFeatureError);
-        appState.currentMouthTraitValue = null;
-        clearImage(dom.backgroundPatchImage);
-        clearImage(dom.specialtyPatchImage);
-        clearImage(dom.neckMythicMambaOverlayImage);
-        clearImage(dom.specialtyForeheadOverlayImage);
-
-        loadTraitSpecificOverlay(metadata, "eyes", dom.eyesOverlayImage, dom.eyesError, DECODED_URLS.EYES_BASE, 'eyes',
-            (val) => val && val.toUpperCase() !== "NONE", "EYES OVERLAY",
-            (val) => { appState.currentEyesTraitValue = val; },
-            () => appState.currentEyesTraitValue = null
-        );
-
-        if (!metadata) return;
-
-        const mouthAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "mouth");
-        const specialtyAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "specialty");
-        const backgroundAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "background");
-        const neckAttribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === "neck");
-
-        if (mouthAttribute && mouthAttribute.value && TRIGGER_MOUTH_TRAIT_VALUES.includes(mouthAttribute.value)) {
-            loadTraitSpecificOverlay(metadata, "mouth", dom.mouthFeatureOverlayImage, dom.mouthFeatureError, DECODED_URLS.MOUTH_BASE, 'mouthFeature',
-                (val) => TRIGGER_MOUTH_TRAIT_VALUES.includes(val), "MOUTH FEATURE OVERLAY",
-                (val) => { appState.currentMouthTraitValue = val; },
-                () => appState.currentMouthTraitValue = null
-            );
-        }
-
-        if (neckAttribute && neckAttribute.value === NECK_TRAIT_VALUE_MYTHIC_MAMBA) {
-            const mythicMambaUrl = DECODED_URLS.NECK_MYTHIC_MAMBA_OVERLAY;
-            const localLoadId = ++appState.loadCounters.neckMythicMambaOverlay;
-            dom.neckMythicMambaOverlayImage.crossOrigin = "Anonymous";
-            dom.neckMythicMambaOverlayImage.onload = () => {
-                if (localLoadId === appState.loadCounters.neckMythicMambaOverlay) {
-                    dom.neckMythicMambaOverlayImage.style.display = 'block';
-                }
-            };
-            dom.neckMythicMambaOverlayImage.onerror = () => {
-                if (localLoadId === appState.loadCounters.neckMythicMambaOverlay) {
-                    clearImage(dom.neckMythicMambaOverlayImage);
-                    console.warn(`Failed to load Mythic Mamba Neck Overlay from ${mythicMambaUrl}`);
-                }
-            };
-            dom.neckMythicMambaOverlayImage.src = mythicMambaUrl;
-        }
-
-        let specialtyPatchDisplayed = false;
-        if (specialtyAttribute && specialtyAttribute.value && SPECIALTY_PATCH_TRIGGER_VALUES.includes(specialtyAttribute.value)) {
-            loadTraitSpecificOverlay(metadata, "specialty", dom.specialtyPatchImage, null, DECODED_URLS.SPECIALTY_PATCH_BASE, 'specialtyPatch',
-                (val) => SPECIALTY_PATCH_TRIGGER_VALUES.includes(val), "SPECIALTY PATCH (WINGS)"
-            );
-            specialtyPatchDisplayed = true;
-        }
-
-        if (specialtyAttribute && specialtyAttribute.value && SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(specialtyAttribute.value)) {
-             loadTraitSpecificOverlay(metadata, "specialty", dom.specialtyForeheadOverlayImage, null, DECODED_URLS.SPECIALTY_FOREHEAD_BASE, 'specialtyForeheadOverlay',
-                (val) => SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(val), "SPECIALTY FOREHEAD OVERLAY"
-            );
-        }
-
-        if (!specialtyPatchDisplayed) {
-            if (backgroundAttribute && backgroundAttribute.value && backgroundAttribute.value.toUpperCase() !== "NONE") {
-                 loadTraitSpecificOverlay(metadata, "background", dom.backgroundPatchImage, null, DECODED_URLS.BACKGROUND_PATCH_BASE, 'backgroundPatch',
-                    (val) => val && val.toUpperCase() !== "NONE", "BACKGROUND PATCH"
-                );
+        switch (overlayType) {
+            case 'smile':
+                isVisible = appState.showSmile && canDisplay;
+                displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, isVisible);
+                break;
+            case 'left':
+                isVisible = appState.showLeftHand && appState.handOptionsVisible && canDisplay;
+                displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, isVisible);
+                break;
+            case 'right':
+                isVisible = appState.showRightHand && appState.handOptionsVisible && canDisplay;
+                displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, isVisible);
+                break;
+            case 'beer':
+            case 'beercoin': {
+                const stateKey = `show${overlayType.charAt(0).toUpperCase() + overlayType.slice(1)}`;
+                isVisible = appState[stateKey] && appState.gmOptionsVisible && canDisplay;
+                displayUserToggledOverlayImage(overlayType, appState.lastFetchedMetadata, isVisible);
+                break;
             }
+            case 'mug':
+                isVisible = appState.showMug && appState.gmOptionsVisible && canDisplay;
+                displayUserToggledOverlayImage('mug', appState.lastFetchedMetadata, isVisible);
+                updateCarouselMug();
+                break;
         }
     }
 
-    function loadTraitSpecificOverlay(metadata, traitType, imgElement, errorElement, baseUrl, loadCounterKey, valueValidator, errorMessagePrefix = traitType.toUpperCase(), onFoundCallback = null, onClearCallback = null) {
-        clearImage(imgElement, errorElement);
-        if(onClearCallback) onClearCallback();
-
-        if (!metadata || !metadata.attributes || metadata.attributes.length === 0) return;
-
-        const attribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === traitType.toLowerCase());
-
-        if (attribute && attribute.value && valueValidator(attribute.value)) {
-            const traitValue = attribute.value;
-            if(onFoundCallback) onFoundCallback(traitValue);
-
-            const fileName = `${encodeURIComponent(traitValue)}.png`;
-            const imageUrl = baseUrl + fileName;
-            const localLoadId = ++appState.loadCounters[loadCounterKey];
-
+    function updateCarouselMug() {
+        const imgElement = dom.carouselMugOverlayImage;
+        if (appState.showMug && appState.carouselMugIndex > -1) {
+            const mugData = CAROUSEL_MUGS[appState.carouselMugIndex];
+            const localLoadId = ++appState.loadCounters.carouselMug;
             imgElement.crossOrigin = "Anonymous";
-            imgElement.onload = () => {
-                if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
-                imgElement.style.display = 'block';
-            };
-            imgElement.onerror = () => {
-                if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
-                clearImage(imgElement);
-                console.warn(`${errorMessagePrefix} overlay asset for "${traitValue}" not found at ${imageUrl}`);
-                if(onClearCallback) onClearCallback();
-            };
-            imgElement.src = imageUrl;
+            imgElement.onload = () => { if (localLoadId === appState.loadCounters.carouselMug) imgElement.style.display = 'block'; };
+            imgElement.onerror = () => { if (localLoadId === appState.loadCounters.carouselMug) clearImage(imgElement); };
+            imgElement.src = mugData.url;
+        } else {
+            clearImage(imgElement);
         }
     }
 
+    function updateCarouselGm() {
+        const imgElement = dom.carouselGmOverlayImage;
+        if (appState.showGmColor && appState.carouselGmIndex > -1) {
+            const gmData = CAROUSEL_GMS[appState.carouselGmIndex];
+            const localLoadId = ++appState.loadCounters.carouselGm;
+            imgElement.crossOrigin = "Anonymous";
+            imgElement.onload = () => { if (localLoadId === appState.loadCounters.carouselGm) imgElement.style.display = 'block'; };
+            imgElement.onerror = () => { if (localLoadId === appState.loadCounters.carouselGm) clearImage(imgElement); };
+            imgElement.src = gmData.url;
+        } else {
+            clearImage(imgElement);
+        }
+    }
+    
     function displayUserToggledOverlayImage(overlayType, metadata, shouldShowExplicitly) {
         let imgElement, errorElement, baseUrl, loadCounterKey, errorMessagePrefix, imageUrl;
         const baseAssetType = "skin";
 
-        if (overlayType === 'smile') {
-            imgElement = dom.smileOverlayImage; errorElement = dom.smileError; baseUrl = DECODED_URLS.SMILE_BASE;
-            loadCounterKey = 'smile'; errorMessagePrefix = "SMILE OVERLAY";
-        } else if (overlayType === 'left') {
-            imgElement = dom.leftHandImage; errorElement = dom.leftHandError; baseUrl = DECODED_URLS.LEFT_HAND_BASE;
-            loadCounterKey = 'leftHand'; errorMessagePrefix = "LEFT HAND";
-        } else if (overlayType === 'right') {
-            imgElement = dom.rightHandImage; errorElement = dom.rightHandError; baseUrl = DECODED_URLS.RIGHT_HAND_BASE;
-            loadCounterKey = 'rightHand'; errorMessagePrefix = "RIGHT HAND";
-        } else if (overlayType === 'beercoin') {
-            imgElement = dom.beercoinOverlayImage;
-            imageUrl = DECODED_URLS.BEERCOIN_IMG;
-            loadCounterKey = 'beercoin'; errorMessagePrefix = "BEERCOIN OVERLAY";
-        } else if (overlayType === 'beer') {
-            imgElement = dom.beerOverlayImage;
-            baseUrl = DECODED_URLS.BEER_BASE;
-            loadCounterKey = 'beer'; errorMessagePrefix = "BEER OVERLAY";
-        } else { return; }
+        switch(overlayType) {
+            case 'smile':
+                imgElement = dom.smileOverlayImage; errorElement = dom.smileError; baseUrl = DECODED_URLS.SMILE_BASE;
+                loadCounterKey = 'smile'; errorMessagePrefix = "SMILE OVERLAY";
+                break;
+            case 'left':
+                imgElement = dom.leftHandImage; errorElement = dom.leftHandError; baseUrl = DECODED_URLS.LEFT_HAND_BASE;
+                loadCounterKey = 'leftHand'; errorMessagePrefix = "LEFT HAND";
+                break;
+            case 'right':
+                imgElement = dom.rightHandImage; errorElement = dom.rightHandError; baseUrl = DECODED_URLS.RIGHT_HAND_BASE;
+                loadCounterKey = 'rightHand'; errorMessagePrefix = "RIGHT HAND";
+                break;
+            case 'beercoin':
+                imgElement = dom.beercoinOverlayImage; imageUrl = DECODED_URLS.BEERCOIN_IMG;
+                loadCounterKey = 'beercoin'; errorMessagePrefix = "BEERCOIN OVERLAY";
+                break;
+            case 'beer':
+                imgElement = dom.beerOverlayImage; baseUrl = DECODED_URLS.BEER_BASE;
+                loadCounterKey = 'beer'; errorMessagePrefix = "BEER OVERLAY";
+                break;
+            case 'mug':
+                imgElement = dom.mugOverlayImage; errorElement = dom.mugError; baseUrl = DECODED_URLS.MUG_BASE;
+                loadCounterKey = 'mug'; errorMessagePrefix = "MUG (SKIN) OVERLAY";
+                break;
+            default: return;
+        }
 
         if (!shouldShowExplicitly) {
             clearImage(imgElement, errorElement);
@@ -638,25 +743,14 @@
 
         const localLoadId = ++appState.loadCounters[loadCounterKey];
         if (errorElement) { errorElement.style.display = 'none'; errorElement.textContent = ''; }
+        if (overlayType !== 'beercoin' && (!metadata || !metadata.attributes)) { return; }
 
-        if (overlayType !== 'beercoin' && (!metadata || !metadata.attributes || metadata.attributes.length === 0)) {
-            console.warn(`NO METADATA FOR ${errorMessagePrefix} VARIANT.`);
-            clearImage(imgElement);
-            if (overlayType === 'smile') updateFacialFeatureOverlays(null);
-            return;
-        }
-
-        if (overlayType === 'beercoin') {
-            // imageUrl is already set
-        } else {
+        if (overlayType !== 'beercoin') {
             const attribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === baseAssetType);
             if (attribute && attribute.value) {
-                const attributeValue = attribute.value;
-                const fileName = `${encodeURIComponent(attributeValue)}.png`;
-                imageUrl = baseUrl + fileName;
+                imageUrl = baseUrl + `${encodeURIComponent(attribute.value)}.png`;
             } else {
                 clearImage(imgElement);
-                console.warn(`"${baseAssetType.toUpperCase()}" ATTRIBUTE NOT FOUND FOR ${errorMessagePrefix}.`);
                 if (overlayType === 'smile') updateFacialFeatureOverlays(null);
                 return;
             }
@@ -664,50 +758,37 @@
 
         imgElement.crossOrigin = "Anonymous";
         imgElement.onload = () => {
-            if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
-            imgElement.style.display = 'block';
-            if(errorElement) errorElement.style.display = 'none';
-            if (overlayType === 'smile') updateFacialFeatureOverlays(metadata);
+            if (localLoadId === appState.loadCounters[loadCounterKey]) {
+                imgElement.style.display = 'block';
+                if (errorElement) errorElement.style.display = 'none';
+                if (overlayType === 'smile') updateFacialFeatureOverlays(metadata);
+            }
         }
         imgElement.onerror = () => {
-            if (localLoadId !== appState.loadCounters[loadCounterKey]) return;
-            clearImage(imgElement);
-            let errorMsgDetail = overlayType === 'beercoin' ? `ASSET NOT FOUND.` : `${baseAssetType.toUpperCase()} VARIANT ASSET NOT FOUND.`;
-            if (errorElement) {
-                errorElement.textContent = `${errorMessagePrefix} ${errorMsgDetail}`;
-                errorElement.style.display = 'block';
+            if (localLoadId === appState.loadCounters[loadCounterKey]) {
+                clearImage(imgElement, errorElement);
+                if (errorElement) {
+                    errorElement.textContent = `${errorMessagePrefix} VARIANT NOT FOUND.`;
+                    errorElement.style.display = 'block';
+                }
+                if (overlayType === 'smile') updateFacialFeatureOverlays(null);
             }
-            console.warn(`${errorMessagePrefix} ${errorMsgDetail} URL: ${imageUrl}.`);
-            if (overlayType === 'smile') updateFacialFeatureOverlays(null);
         }
         imgElement.src = imageUrl;
     }
 
     async function fetchDeGod() {
         const idValueTrimmed = dom.deGodIdInput.value.trim();
-
-        if (appState.currentFetchController) appState.currentFetchController.abort();
+        if (appState.currentFetchController) { appState.currentFetchController.abort(); }
         appState.currentFetchController = new AbortController();
         const { signal } = appState.currentFetchController;
         const localNftImageLoadId = ++appState.loadCounters.nft;
 
-        if (!idValueTrimmed) {
-            clearFetchedDataUI(true); dom.errorDiv.textContent = 'PLEASE ENTER A DEGOD ID.';
-            dom.loadingDiv.style.display = 'none';
-            if (appState.currentFetchController?.signal === signal) appState.currentFetchController = null;
-            return;
-        }
-
+        if (!idValueTrimmed) { resetSearch(); dom.errorDiv.textContent = 'PLEASE ENTER A DEGOD ID.'; return; }
         clearFetchedDataUI(false);
         dom.loadingDiv.style.display = 'block';
         const id = parseInt(idValueTrimmed);
-
-        if (isNaN(id) || id < 1 || id > 10000) {
-            dom.errorDiv.textContent = 'PLEASE ENTER A VALID ID (BETWEEN 1 AND 10000).';
-            dom.loadingDiv.style.display = 'none'; clearFetchedDataUI(true);
-            if (appState.currentFetchController?.signal === signal) appState.currentFetchController = null;
-            return;
-        }
+        if (isNaN(id) || id < 1 || id > 10000) { dom.errorDiv.textContent = 'PLEASE ENTER A VALID ID (1-10000).'; dom.loadingDiv.style.display = 'none'; clearFetchedDataUI(true); return; }
 
         const metadataUrl = `${DECODED_URLS.METADATA_BASE}${id - 1}.json`;
 
@@ -715,17 +796,11 @@
             const response = await fetch(metadataUrl, { signal });
             if (!response.ok) throw new Error(`FAILED TO FETCH DATA. STATUS: ${response.status}`);
             const metadata = await response.json();
+            if (signal.aborted) return;
             appState.lastFetchedMetadata = metadata;
-
-            if (signal.aborted) {
-                if (localNftImageLoadId === appState.loadCounters.nft && !dom.deGodIdInput.value.trim()) clearFetchedDataUI(true);
-                dom.loadingDiv.style.display = 'none'; return;
-            }
 
             if (metadata?.image) {
                 dom.nftImage.crossOrigin = "Anonymous";
-                dom.nftImage.onload = null; dom.nftImage.onerror = null;
-
                 dom.nftImage.onload = () => {
                     if (localNftImageLoadId !== appState.loadCounters.nft || signal.aborted) return;
                     dom.loadingDiv.style.display = 'none';
@@ -733,129 +808,90 @@
                     dom.nftImage.style.display = 'block';
                     dom.nftImage.alt = `DeGod NFT #${id}`;
                     dom.downloadBtn.style.display = 'block';
-
                     updateFacialFeatureOverlays(metadata);
-
-                    if (appState.showSmile) updateOverlayVisibility('smile');
-                    if (appState.handOptionsVisible) {
-                       if (appState.showLeftHand) updateOverlayVisibility('left');
-                       if (appState.showRightHand) updateOverlayVisibility('right');
-                    }
-                    if (appState.gmOptionsVisible) {
-                        if (appState.showBeercoin) updateOverlayVisibility('beercoin');
-                        if (appState.showBeer) updateOverlayVisibility('beer');
-                    }
-                }
-                dom.nftImage.onerror = () => {
-                    if (localNftImageLoadId !== appState.loadCounters.nft || signal.aborted) return;
-                    dom.loadingDiv.style.display = 'none'; dom.errorDiv.textContent = 'FAILED TO LOAD MAIN NFT IMAGE.';
-                    clearFetchedDataUI(true);
-                }
+                    ['smile', 'left', 'right', 'beer', 'beercoin', 'mug'].forEach(updateOverlayVisibility);
+                    updateCarouselGm();
+                };
+                dom.nftImage.onerror = () => { if (localNftImageLoadId === appState.loadCounters.nft) { dom.loadingDiv.style.display = 'none'; dom.errorDiv.textContent = 'FAILED TO LOAD MAIN NFT IMAGE.'; clearFetchedDataUI(true); }};
                 dom.nftImage.src = metadata.image;
-            } else { throw new Error('INVALID METADATA FORMAT OR "IMAGE" FIELD NOT FOUND.'); }
+            } else { throw new Error('INVALID METADATA: "IMAGE" FIELD NOT FOUND.'); }
         } catch (err) {
-            if (err.name === 'AbortError') {
-                if (localNftImageLoadId === appState.loadCounters.nft && !dom.deGodIdInput.value.trim()) clearFetchedDataUI(true);
-            } else {
-                console.error("ERROR FETCHING DEGOD:", err);
-                dom.errorDiv.textContent = `AN ERROR OCCURRED: ${err.message.toUpperCase()}`;
-                clearFetchedDataUI(true);
-            }
-            dom.loadingDiv.style.display = 'none';
-        } finally {
-            if (appState.currentFetchController?.signal === signal) appState.currentFetchController = null;
+            if (err.name !== 'AbortError') { console.error("ERROR FETCHING DEGOD:", err); dom.errorDiv.textContent = `AN ERROR OCCURRED: ${err.message.toUpperCase()}`; clearFetchedDataUI(true); dom.loadingDiv.style.display = 'none'; }
         }
+    }
+    
+    function updateFacialFeatureOverlays(metadata) {
+        clearImage(dom.mouthFeatureOverlayImage, dom.mouthFeatureError); appState.currentMouthTraitValue = null;
+        clearImage(dom.backgroundPatchImage); clearImage(dom.specialtyPatchImage); clearImage(dom.neckMythicMambaOverlayImage); clearImage(dom.specialtyForeheadOverlayImage);
+        loadTraitSpecificOverlay(metadata, "eyes", dom.eyesOverlayImage, dom.eyesError, DECODED_URLS.EYES_BASE, 'eyes', (val) => val && val.toUpperCase() !== "NONE", "EYES OVERLAY", (val) => { appState.currentEyesTraitValue = val; }, () => appState.currentEyesTraitValue = null);
+        if (!metadata) return;
+        const mouthAttr = metadata.attributes.find(a => a.trait_type.toLowerCase() === "mouth");
+        if (mouthAttr && TRIGGER_MOUTH_TRAIT_VALUES.includes(mouthAttr.value)) { loadTraitSpecificOverlay(metadata, "mouth", dom.mouthFeatureOverlayImage, dom.mouthFeatureError, DECODED_URLS.MOUTH_BASE, 'mouthFeature', (val) => TRIGGER_MOUTH_TRAIT_VALUES.includes(val), "MOUTH FEATURE", (val) => { appState.currentMouthTraitValue = val; }, () => appState.currentMouthTraitValue = null); }
+        const neckAttr = metadata.attributes.find(a => a.trait_type.toLowerCase() === "neck");
+        if (neckAttr && neckAttr.value === NECK_TRAIT_VALUE_MYTHIC_MAMBA) { const l = ++appState.loadCounters.neckMythicMambaOverlay; dom.neckMythicMambaOverlayImage.crossOrigin = "Anonymous"; dom.neckMythicMambaOverlayImage.onload = () => { if (l === appState.loadCounters.neckMythicMambaOverlay) dom.neckMythicMambaOverlayImage.style.display = 'block'; }; dom.neckMythicMambaOverlayImage.src = DECODED_URLS.NECK_MYTHIC_MAMBA_OVERLAY; }
+        const specialtyAttr = metadata.attributes.find(a => a.trait_type.toLowerCase() === "specialty");
+        let specialtyPatchDisplayed = false;
+        if (specialtyAttr && SPECIALTY_PATCH_TRIGGER_VALUES.includes(specialtyAttr.value)) { loadTraitSpecificOverlay(metadata, "specialty", dom.specialtyPatchImage, null, DECODED_URLS.SPECIALTY_PATCH_BASE, 'specialtyPatch', (val) => SPECIALTY_PATCH_TRIGGER_VALUES.includes(val), "SPECIALTY PATCH (WINGS)"); specialtyPatchDisplayed = true; }
+        if (specialtyAttr && SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(specialtyAttr.value)) { loadTraitSpecificOverlay(metadata, "specialty", dom.specialtyForeheadOverlayImage, null, DECODED_URLS.SPECIALTY_FOREHEAD_BASE, 'specialtyForeheadOverlay', (val) => SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(val), "SPECIALTY FOREHEAD OVERLAY"); }
+        if (!specialtyPatchDisplayed) { const bgAttr = metadata.attributes.find(a => a.trait_type.toLowerCase() === "background"); if (bgAttr && bgAttr.value.toUpperCase() !== "NONE") { loadTraitSpecificOverlay(metadata, "background", dom.backgroundPatchImage, null, DECODED_URLS.BACKGROUND_PATCH_BASE, 'backgroundPatch', (val) => val && val.toUpperCase() !== "NONE", "BACKGROUND PATCH"); } }
+    }
+    function loadTraitSpecificOverlay(metadata, traitType, imgElement, errorElement, baseUrl, loadCounterKey, valueValidator, errorMessagePrefix = traitType.toUpperCase(), onFoundCallback = null, onClearCallback = null) {
+        clearImage(imgElement, errorElement); if(onClearCallback) onClearCallback(); if (!metadata || !metadata.attributes) return;
+        const attribute = metadata.attributes.find(attr => attr.trait_type.toLowerCase() === traitType.toLowerCase());
+        if (attribute && attribute.value && valueValidator(attribute.value)) { const traitValue = attribute.value; if(onFoundCallback) onFoundCallback(traitValue); const imageUrl = baseUrl + `${encodeURIComponent(traitValue)}.png`; const localLoadId = ++appState.loadCounters[loadCounterKey]; imgElement.crossOrigin = "Anonymous"; imgElement.onload = () => { if (localLoadId === appState.loadCounters[loadCounterKey]) imgElement.style.display = 'block'; }; imgElement.onerror = () => { if (localLoadId === appState.loadCounters[loadCounterKey]) { clearImage(imgElement); if(onClearCallback) onClearCallback(); } }; imgElement.src = imageUrl; }
     }
 
     async function handleDownload() {
-        if (!appState.lastFetchedMetadata || !dom.nftImage.src || dom.nftImage.src === DECODED_URLS.PREVIEW_IMG || dom.imageStackContainer.style.display === 'none' || !dom.nftImage.complete || dom.nftImage.naturalWidth === 0) {
-            alert("ACTUAL NFT IMAGE NOT FULLY LOADED OR UNAVAILABLE FOR DOWNLOAD."); return;
+        if (!appState.lastFetchedMetadata || !dom.nftImage.src || dom.nftImage.src === DECODED_URLS.PREVIEW_IMG || !dom.nftImage.complete || dom.nftImage.naturalWidth === 0) {
+            alert("NFT IMAGE NOT FULLY LOADED OR UNAVAILABLE."); return;
         }
-
         const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
         const TARGET_WIDTH = 1000; const TARGET_HEIGHT = 1000;
         canvas.width = TARGET_WIDTH; canvas.height = TARGET_HEIGHT;
         const idForFilename = dom.deGodIdInput.value || 'NFT';
 
         const drawImageToCanvas = (imgElement) => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 if (!imgElement || imgElement.style.display === 'none' || !imgElement.src) { resolve(); return; }
-                if (imgElement.complete && imgElement.naturalWidth !== 0) {
-                    try {
-                        ctx.drawImage(imgElement, 0, 0, imgElement.naturalWidth, imgElement.naturalHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
-                        resolve();
-                    } catch (e) { console.error(`Error drawing ${imgElement.alt}:`, e); reject(e); }
-                } else {
-                    const tempImg = new Image(); tempImg.crossOrigin = "Anonymous";
-                    tempImg.onload = () => {
-                       try {
-                            ctx.drawImage(tempImg, 0, 0, tempImg.naturalWidth, tempImg.naturalHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT);
-                            resolve();
-                       } catch (e) { console.error(`Error drawing loaded temp ${imgElement.alt}:`, e); reject(e); }
-                    };
-                    tempImg.onerror = () => {
-                        console.warn(`FAILED TO LOAD ${imgElement.alt.toUpperCase()} FOR DOWNLOAD. SKIPPING.`);
-                        resolve();
-                    };
-                    tempImg.src = imgElement.src;
-                }
+                const tempImg = new Image(); tempImg.crossOrigin = "Anonymous";
+                tempImg.onload = () => { ctx.drawImage(tempImg, 0, 0, TARGET_WIDTH, TARGET_HEIGHT); resolve(); };
+                tempImg.onerror = () => { console.warn(`FAILED TO LOAD ${imgElement.alt.toUpperCase()} FOR DOWNLOAD. SKIPPING.`); resolve(); };
+                tempImg.src = imgElement.src;
             });
         };
 
         let filenameParts = [`DEGOD_${idForFilename}`];
         try {
-            // Order reflects Z-index (lowest to highest for drawing)
             const imagesInDrawOrder = [
-                dom.nftImage,
-                dom.backgroundPatchImage,
-                dom.specialtyPatchImage,
-                dom.neckMythicMambaOverlayImage,
-                dom.smileOverlayImage,
-                dom.eyesOverlayImage,
-                dom.specialtyForeheadOverlayImage,
-                dom.mouthFeatureOverlayImage,
-                dom.leftHandImage,
-                dom.rightHandImage,
-                dom.beerOverlayImage,      // Drawn before beercoin
-                dom.beercoinOverlayImage   // Drawn last (on top)
+                dom.nftImage, dom.backgroundPatchImage, dom.specialtyPatchImage, dom.neckMythicMambaOverlayImage,
+                dom.smileOverlayImage, dom.eyesOverlayImage, dom.specialtyForeheadOverlayImage, dom.mouthFeatureOverlayImage,
+                dom.leftHandImage, dom.rightHandImage, dom.beerOverlayImage, dom.mugOverlayImage, dom.carouselMugOverlayImage,
+                dom.carouselGmOverlayImage, dom.beercoinOverlayImage
             ];
-
-            for (const img of imagesInDrawOrder) {
-                 await drawImageToCanvas(img);
-            }
+            for (const img of imagesInDrawOrder) { await drawImageToCanvas(img); }
 
             if (appState.showSmile && dom.smileOverlayImage.style.display !== 'none') filenameParts.push("SMILE");
-            if (dom.neckMythicMambaOverlayImage.style.display !== 'none') filenameParts.push("MAMBA_NECK");
-            if (dom.specialtyForeheadOverlayImage.style.display !== 'none') {
-                const specialtyAttr = appState.lastFetchedMetadata.attributes.find(attr => attr.trait_type.toLowerCase() === "specialty" && SPECIALTY_FOREHEAD_TRIGGER_VALUES.includes(attr.value));
-                if (specialtyAttr) {
-                    filenameParts.push(specialtyAttr.value.replace(/\s+/g, '_').toUpperCase());
-                }
-            }
             if (appState.showBeer && dom.beerOverlayImage.style.display !== 'none') filenameParts.push("BEER");
+            if (appState.showMug && dom.carouselMugOverlayImage.style.display !== 'none' && appState.carouselMugIndex > -1) {
+                filenameParts.push(CAROUSEL_MUGS[appState.carouselMugIndex].name);
+            }
+            if (appState.showGmColor && dom.carouselGmOverlayImage.style.display !== 'none' && appState.carouselGmIndex > -1) {
+                filenameParts.push(CAROUSEL_GMS[appState.carouselGmIndex].name);
+            }
             if (appState.showBeercoin && dom.beercoinOverlayImage.style.display !== 'none') filenameParts.push("BEERCOIN");
-
-
-            filenameParts.push(`${TARGET_WIDTH}X${TARGET_HEIGHT}.PNG`);
-            const finalFilename = filenameParts.join('_').replace(/__+/g, '_');
+            
+            const finalFilename = filenameParts.join('_').replace(/__+/g, '_') + `_${TARGET_WIDTH}x${TARGET_HEIGHT}.PNG`;
             triggerCanvasDownload(canvas, finalFilename);
-
-        } catch (e) {
-            console.error("ERROR DURING IMAGE COMPOSITING FOR DOWNLOAD:", e);
-            alert("AN ERROR OCCURRED PREPARING IMAGE. CHECK CONSOLE.");
-        }
+        } catch (e) { console.error("ERROR DURING IMAGE COMPOSITING:", e); alert("AN ERROR OCCURRED PREPARING IMAGE."); }
     }
 
     function triggerCanvasDownload(canvas, filename) {
         try {
-            const dataURL = canvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.href = dataURL; link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.download = filename;
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        } catch (e) {
-            console.error("ERROR CREATING DATA URL OR DOWNLOADING:", e);
-            alert("FAILED TO CREATE IMAGE FOR DOWNLOAD. POSSIBLE CORS ISSUE OR CANVAS TAINTED.");
-        }
+        } catch (e) { console.error("ERROR DOWNLOADING:", e); alert("FAILED TO CREATE IMAGE FOR DOWNLOAD. CANVAS MAY BE TAINTED."); }
     }
 </script>
 </body>
